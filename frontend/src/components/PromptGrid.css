@@ -1,0 +1,33 @@
+.prompt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+.prompt-grid-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #999;
+  text-align: center;
+}
+
+.prompt-grid-empty p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.empty-hint {
+  font-size: 0.875rem;
+  color: #bbb;
+}
+
+@media (max-width: 768px) {
+  .prompt-grid {
+    grid-template-columns: 1fr;
+  }
+}
