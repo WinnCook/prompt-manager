@@ -27,9 +27,10 @@ export function NewFolderButton() {
       return;
     }
 
+    // If no folder is selected, create at root level (parent_id = 1)
     const result = await createFolder({
       name: trimmedName,
-      parent_id: selectedFolderId,
+      parent_id: selectedFolderId ?? 1,
     });
 
     if (result) {

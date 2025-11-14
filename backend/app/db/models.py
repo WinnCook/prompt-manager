@@ -33,10 +33,12 @@ class Prompt(Base):
     id = Column(Integer, primary_key=True, index=True)
     folder_id = Column(Integer, ForeignKey("folders.id", ondelete="CASCADE"), nullable=False)
     title = Column(String(500), nullable=False, index=True)
+    description = Column(String(1000), nullable=True)
     content = Column(Text, nullable=False)
     original_content = Column(Text, nullable=True)
     is_ai_enhanced = Column(Boolean, default=False)
     tags = Column(String(1000), nullable=True)  # Comma-separated tags
+    display_order = Column(Integer, nullable=True, index=True)  # User-defined sort order within folder
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

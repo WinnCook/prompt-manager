@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Prompt } from '@/types/api';
+import { hasVariables } from '@/utils/variables';
 import './PromptCard.css';
 
 interface PromptCardProps {
@@ -8,6 +9,7 @@ interface PromptCardProps {
   onEdit?: (prompt: Prompt) => void;
   onDuplicate?: (prompt: Prompt) => void;
   onDelete?: (prompt: Prompt) => void;
+  onEnhance?: (prompt: Prompt) => void;
 }
 
 export function PromptCard({
@@ -16,8 +18,10 @@ export function PromptCard({
   onEdit,
   onDuplicate,
   onDelete,
+  onEnhance,
 }: PromptCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isAiHovered, setIsAiHovered] = useState(false);
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -39,6 +43,11 @@ export function PromptCard({
     onDelete?.(prompt);
   };
 
+  const handleEnhance = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEnhance?.(prompt);
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -58,6 +67,13 @@ export function PromptCard({
     e.dataTransfer.effectAllowed = 'move';
   };
 
+  const hasVars = hasVariables(prompt.content);
+
+  const handleCardClick = () => {
+    // Copy to clipboard when card is clicked
+    onCopy?.(prompt);
+  };
+
   return (
     <div
       className="prompt-card"
@@ -65,9 +81,13 @@ export function PromptCard({
       onDragStart={handleDragStart}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleCardClick}
     >
       <div className="prompt-card-header">
-        <h3 className="prompt-title">{prompt.title}</h3>
+        <h3 className="prompt-title">
+          {prompt.title}
+          {hasVars && <span className="variable-indicator" title="Contains variables">🎯</span>}
+        </h3>
         {isHovered && (
           <div className="prompt-actions">
             <button
@@ -111,8 +131,17 @@ export function PromptCard({
       </div>
 
       <div className="prompt-footer">
+        <button
+          className={`ai-enhance-button ${isAiHovered ? 'ai-hovered' : ''}`}
+          onClick={handleEnhance}
+          onMouseEnter={() => setIsAiHovered(true)}
+          onMouseLeave={() => setIsAiHovered(false)}
+          title="AI Enhance Prompt"
+        >
+          ✨
+        </button>
         <div className="prompt-metadata">
-          <span className="prompt-version">v{prompt.version}</span>
+          <span className="prompt-version">v{prompt.version || 1}</span>
           <span className="prompt-date">{formatDate(prompt.updated_at)}</span>
         </div>
         {prompt.tags && prompt.tags.length > 0 && (

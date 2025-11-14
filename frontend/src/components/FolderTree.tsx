@@ -161,7 +161,7 @@ function FolderTreeItem({ folder, level = 0, allFolders }: FolderTreeItemProps) 
     <>
       <div className="folder-tree-item">
         <div
-          className={`folder-item ${isSelected ? 'selected' : ''} ${isDragOver ? 'drag-over' : ''}`}
+          className={`folder-item ${isSelected ? 'selected' : ''} ${isSelected && isExpanded ? 'expanded' : ''} ${isDragOver ? 'drag-over' : ''}`}
           style={{ paddingLeft: `${level * 1.25}rem` }}
           onClick={handleSelect}
           draggable

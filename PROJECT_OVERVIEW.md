@@ -24,6 +24,12 @@ To become the essential tool for AI power users, helping them build, organize, a
 - **Keyboard Shortcuts**: Power-user productivity features
 - **Settings**: Customizable preferences
 
+### Sprint 3 Features (Completed)
+- **List View**: Toggle between grid and list view layouts
+- **Drag-and-Drop Reordering**: Rearrange prompts with smooth animations
+- **Persistent Ordering**: Custom order maintained across both views
+- **Optimistic UI**: Instant feedback with error rollback
+
 ### Future Enhancements (Backlog)
 - Cloud sync across devices
 - Team collaboration features
@@ -39,7 +45,7 @@ To become the essential tool for AI power users, helping them build, organize, a
 - **React 18**: UI library with TypeScript
 - **Zustand**: Lightweight state management
 - **Vite**: Fast build tool and dev server
-- **React DnD**: Drag and drop functionality
+- **@dnd-kit**: Modern drag-and-drop library with accessibility
 - **Lucide React**: Modern icon library
 
 ### Backend
@@ -70,6 +76,7 @@ prompt-manager/
 │   ├── BACKLOG.md            # Product backlog
 │   ├── SPRINT_01.md          # Sprint 1 (Foundation)
 │   ├── SPRINT_02.md          # Sprint 2 (Advanced Features)
+│   ├── SPRINT_03.md          # Sprint 3 (List View & Reordering) ✅
 │   └── COMPLETED.md          # Completed work log
 │
 ├── backend/                   # Python FastAPI backend
@@ -154,38 +161,42 @@ Jump straight to [ONBOARDING.md](docs/ONBOARDING.md) for a quick-start guide spe
 
 ## Current Status
 
-**Phase**: Planning Complete ✅
-**Sprint**: Sprint 1 (Not Started)
-**Next Milestone**: MVP with core CRUD functionality
+**Phase**: Active Development ✅
+**Sprint**: Sprint 3 Complete (November 14, 2025)
+**Next Milestone**: Advanced features from Sprint 2 backlog
 
-### Completed
-- ✅ Requirements gathering
-- ✅ Architecture design
-- ✅ Technology stack selection
-- ✅ Complete documentation
-- ✅ Sprint planning (Sprint 1 & 2)
-- ✅ Project structure setup
+### Completed Sprints
+- ✅ Sprint 1: Foundation (Core CRUD, folder hierarchy, basic UI)
+- ✅ Sprint 2: Enhancements (Search, descriptions, improved UX)
+- ✅ Sprint 3: List View & Reordering (100% complete, 36 story points)
 
 ### Next Steps
-1. Start Sprint 1 (Foundation)
-2. Set up backend infrastructure
-3. Implement database and APIs
-4. Build basic frontend UI
-5. Integration and testing
+1. Review and prioritize Sprint 2 advanced features
+2. Consider AI enhancement with Claude CLI integration
+3. Implement keyboard shortcuts
+4. Add drag-and-drop for grid view
+5. Explore version history UI
 
 ## Success Metrics
 
-### Sprint 1 Success
+### Sprint 1 Success ✅
 - Working backend API with all CRUD endpoints
 - Database schema implemented
 - Basic frontend with folder navigation
 - Prompt display and editing functional
 
-### Sprint 2 Success
-- Drag and drop working smoothly
-- Claude CLI integration functional
-- Search returns relevant results
-- UI polished and error-free
+### Sprint 2 Success ✅
+- Search functionality implemented and working
+- Description field added to prompts
+- Root folder protection implemented
+- UI improvements and bug fixes
+
+### Sprint 3 Success ✅
+- List view implemented with toggle
+- Drag-and-drop reordering functional
+- Persistent ordering across both views
+- Optimistic UI with error handling
+- 100% task completion rate
 
 ### MVP Success
 - Users can organize prompts in folders
@@ -231,6 +242,7 @@ Jump straight to [ONBOARDING.md](docs/ONBOARDING.md) for a quick-start guide spe
 - [Backlog](project-management/BACKLOG.md)
 - [Sprint 1](project-management/SPRINT_01.md)
 - [Sprint 2](project-management/SPRINT_02.md)
+- [Sprint 3](project-management/SPRINT_03.md) ✅
 - [Completed Work](project-management/COMPLETED.md)
 
 ### Technical
@@ -254,6 +266,6 @@ MIT License - See LICENSE file for details
 
 ---
 
-**Last Updated**: 2025-01-15
-**Version**: 0.1.0-alpha (Planning Phase)
-**Status**: Ready for Development 🚀
+**Last Updated**: 2025-11-14
+**Version**: 0.3.0-alpha (Sprint 3 Complete)
+**Status**: Active Development 🚀

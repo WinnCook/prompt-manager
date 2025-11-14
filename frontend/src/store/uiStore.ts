@@ -1,10 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+type ViewMode = 'grid' | 'list';
+
 interface UIState {
   // Selected folder
   selectedFolderId: number | null;
   setSelectedFolderId: (id: number | null) => void;
+
+  // View mode
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
+  toggleViewMode: () => void;
 
   // Modals
   isEditModalOpen: boolean;
@@ -36,6 +43,13 @@ export const useUIStore = create<UIState>()(
       // Selected folder
       selectedFolderId: null,
       setSelectedFolderId: (id) => set({ selectedFolderId: id }),
+
+      // View mode
+      viewMode: 'grid',
+      setViewMode: (mode) => set({ viewMode: mode }),
+      toggleViewMode: () => set((state) => ({
+        viewMode: state.viewMode === 'grid' ? 'list' : 'grid',
+      })),
 
       // Modals
       isEditModalOpen: false,
@@ -78,6 +92,7 @@ export const useUIStore = create<UIState>()(
         // Only persist these values
         isSidebarCollapsed: state.isSidebarCollapsed,
         selectedFolderId: state.selectedFolderId,
+        viewMode: state.viewMode,
       }),
     }
   )
