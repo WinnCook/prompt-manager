@@ -48,11 +48,17 @@ class FolderRepository:
             parent_id: Parent folder ID (None for root folders)
 
         Returns:
-            List of folders
+            List of folders ordered by display_order
         """
         if parent_id is None:
-            return self.db.query(Folder).filter(Folder.parent_id.is_(None)).all()
-        return self.db.query(Folder).filter(Folder.parent_id == parent_id).all()
+            return (self.db.query(Folder)
+                   .filter(Folder.parent_id.is_(None))
+                   .order_by(Folder.display_order.asc().nulls_last(), Folder.created_at.asc())
+                   .all())
+        return (self.db.query(Folder)
+               .filter(Folder.parent_id == parent_id)
+               .order_by(Folder.display_order.asc().nulls_last(), Folder.created_at.asc())
+               .all())
 
     def create(self, folder: Folder) -> Folder:
         """

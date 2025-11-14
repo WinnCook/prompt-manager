@@ -12,7 +12,7 @@ function App() {
   // Zustand stores
   const { folders, loading, error, loadFolders, createFolder } = useFolderStore()
   const { prompts, loadPrompts, duplicatePrompt, deletePrompt, movePrompt } = usePromptStore()
-  const { selectedFolderId, viewMode, openEditModal, showToast } = useUIStore()
+  const { selectedFolderId, viewMode, openEditModal, showToast, isSidebarCollapsed, toggleSidebar } = useUIStore()
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -328,7 +328,14 @@ function App() {
         </div>
       </header>
       <main className="app-main">
-        <div className="sidebar">
+        <button
+          className="sidebar-toggle"
+          onClick={toggleSidebar}
+          title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {isSidebarCollapsed ? '▶' : '◀'}
+        </button>
+        <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
           <div className="sidebar-content">
             <h2>Folders</h2>
             {!loading && !error && <NewFolderButton />}

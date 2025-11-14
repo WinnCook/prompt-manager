@@ -30,6 +30,14 @@ class FolderMove(BaseModel):
     new_parent_id: Optional[int] = None
 
 
+class FolderReorder(BaseModel):
+    """Model for reordering folders within a parent."""
+
+    folder_id: int = Field(..., description="ID of the folder to reorder")
+    new_position: int = Field(..., ge=0, description="New position (0-based index)")
+    parent_id: Optional[int] = Field(None, description="Parent ID (for validation)")
+
+
 class FolderResponse(FolderBase):
     """Model for folder response."""
 

@@ -14,6 +14,7 @@ interface FolderState {
   updateFolder: (id: number, data: FolderUpdate) => Promise<Folder | null>;
   deleteFolder: (id: number) => Promise<boolean>;
   moveFolder: (id: number, parentId: number | null) => Promise<Folder | null>;
+  reorderFolder: (folderId: number, newPosition: number, parentId: number | null) => Promise<boolean>;
 
   // Helper
   getFolderById: (id: number) => Folder | undefined;
@@ -105,6 +106,22 @@ export const useFolderStore = create<FolderState>((set, get) => ({
     // Reload folders to get updated tree
     await get().loadFolders();
     return result.data || null;
+  },
+
+  // Reorder folder
+  reorderFolder: async (folderId: number, newPosition: number, parentId: number | null) => {
+    set({ loading: true, error: null });
+
+    const result = await folderApi.reorder(folderId, newPosition, parentId);
+
+    if (result.error) {
+      set({ loading: false, error: result.error.message });
+      return false;
+    }
+
+    // Reload folders to get updated tree
+    await get().loadFolders();
+    return true;
   },
 
   // Helper to find folder by ID in tree

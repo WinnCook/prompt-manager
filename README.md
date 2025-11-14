@@ -24,9 +24,11 @@ Prompt Manager is a productivity tool designed to help users organize their prom
 - **Cascade Delete**: Safely delete folders with automatic cleanup of children and prompts
 
 ### UI Features
+- **Collapsible Sidebar**: Toggle button to collapse/expand folder navigation for more screen space
 - **Intuitive Interface**: Left navigation panel, right content area with hover actions
 - **Multiple Views**: Toggle between grid and list view with persistent preference
 - **Drag-and-Drop Reordering**: Rearrange prompts in list view with smooth animations
+- **Folder Management**: Inline rename with pencil icon, up/down arrows to reorder within parent
 - **Quick Actions**: Copy, edit, duplicate, and delete with single clicks
 - **Keyboard Shortcuts**: Efficient navigation and operations
 - **Toast Notifications**: Visual feedback for all operations
@@ -200,6 +202,7 @@ Variables are detected automatically and displayed in the UI for easy substituti
 - `PUT /api/folders/{id}` - Update folder name
 - `DELETE /api/folders/{id}` - Delete folder (protected: root cannot be deleted)
 - `POST /api/folders/{id}/move` - Move folder to new parent
+- `POST /api/folders/reorder` - Reorder folder within its parent
 
 ### Prompts
 - `GET /api/prompts` - List prompts (optional: `?folder_id=X`, `limit=50`, `offset=0`)
@@ -223,6 +226,7 @@ Variables are detected automatically and displayed in the UI for easy substituti
 - `name` (VARCHAR(255), NOT NULL)
 - `parent_id` (INTEGER, FOREIGN KEY → folders.id)
 - `path` (VARCHAR(1000), NOT NULL) - Materialized path for hierarchy
+- `display_order` (INTEGER, NULLABLE, INDEXED) - User-defined sort order within parent
 - `created_at` (DATETIME)
 - `updated_at` (DATETIME)
 
@@ -264,7 +268,8 @@ Variables are detected automatically and displayed in the UI for easy substituti
 
 ### Database Migrations
 The application includes automatic migration scripts in `backend/migrations/` that run on startup:
-- `add_display_order.py`: Adds display_order column for prompt reordering (Sprint 3)
+- `add_display_order.py` (Migration 003): Adds display_order column for prompt reordering
+- `add_folder_display_order.py` (Migration 004): Adds display_order column for folder reordering
 
 When adding new fields manually, use SQLite ALTER TABLE:
 ```sql
@@ -288,6 +293,14 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 - Run manual migrations for schema changes
 
 ## Recent Updates
+
+### UX Enhancements (November 14, 2025) ✅
+- **Collapsible Sidebar**: Toggle button to collapse/expand folder navigation with persisted state
+- **Folder Rename**: Inline rename functionality with pencil icon on selected folders
+- **Folder Reordering**: Up/down arrow buttons to reorder folders within their parent
+- **Improved Error Handling**: Better feedback when dropping folders into same parent
+- **Display Order System**: Database-backed folder ordering with migrations
+- All existing prompts preserved during migration
 
 ### Sprint 3 Completion (November 14, 2025) ✅
 - **List View**: Toggle between grid and list view with persistent preference

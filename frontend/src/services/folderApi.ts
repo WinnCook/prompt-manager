@@ -66,6 +66,21 @@ export const folderApi = {
   async move(id: number, data: FolderMove): Promise<ApiResponse<Folder>> {
     return api.post<Folder>(`/api/folders/${id}/move`, data);
   },
+
+  /**
+   * Reorder folders within a parent
+   * @param folderId - Folder ID to reorder
+   * @param newPosition - New position (0-based index)
+   * @param parentId - Parent folder ID
+   * @returns Updated folder tree
+   */
+  async reorder(folderId: number, newPosition: number, parentId: number | null): Promise<ApiResponse<{ folders: Folder[] }>> {
+    return api.post<{ folders: Folder[] }>('/api/folders/reorder', {
+      folder_id: folderId,
+      new_position: newPosition,
+      parent_id: parentId
+    });
+  },
 };
 
 export default folderApi;

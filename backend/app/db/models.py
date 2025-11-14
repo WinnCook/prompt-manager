@@ -17,6 +17,7 @@ class Folder(Base):
     name = Column(String(255), nullable=False)
     parent_id = Column(Integer, ForeignKey("folders.id", ondelete="CASCADE"), nullable=True)
     path = Column(String(1000), nullable=False, index=True)
+    display_order = Column(Integer, nullable=True, index=True)  # User-defined sort order within parent
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

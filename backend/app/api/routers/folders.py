@@ -10,6 +10,7 @@ from app.models.folder import (
     FolderCreate,
     FolderUpdate,
     FolderMove,
+    FolderReorder,
     FolderResponse,
     FolderTreeResponse
 )
@@ -122,3 +123,39 @@ def move_folder(
     service = FolderService(db)
     folder = service.move_folder(folder_id, move_data.new_parent_id)
     return folder
+
+
+@router.post("/reorder", response_model=FolderTreeResponse)
+def reorder_folders(
+    reorder_data: FolderReorder,
+    db: Session = Depends(get_db)
+):
+    """
+    Reorder a folder within its parent.
+
+    Moves the specified folder to a new position and adjusts other folders
+    in the parent accordingly. All folders will have their display_order updated.
+
+    Args:
+        reorder_data: Reorder operation data (folder_id, new_position, parent_id)
+        db: Database session
+
+    Returns:
+        Complete folder tree with updated display_order
+
+    Raises:
+        404: If folder or parent not found
+        400: If folder is not in the specified parent
+    """
+    service = FolderService(db)
+
+    # Perform reordering
+    service.reorder_folders(
+        folder_id=reorder_data.folder_id,
+        new_position=reorder_data.new_position,
+        parent_id=reorder_data.parent_id
+    )
+
+    # Return complete folder tree
+    folders = service.get_folder_tree()
+    return {"folders": folders}

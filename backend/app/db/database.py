@@ -45,7 +45,9 @@ def init_db():
     # Run migrations
     try:
         from migrations import migration_003_add_display_order
+        from migrations import migration_004_add_folder_display_order
         migration_003_add_display_order.migrate()
+        migration_004_add_folder_display_order.migrate()
     except Exception as e:
         print(f"[WARNING] Migration failed: {e}")
 

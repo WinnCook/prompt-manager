@@ -263,3 +263,60 @@ class FolderService:
         children = self.repo.get_by_parent_id(folder.id)
         for child in children:
             self._update_folder_paths(child)
+
+    def reorder_folders(self, folder_id: int, new_position: int, parent_id: Optional[int]) -> List[Folder]:
+        """
+        Reorder a folder within its parent.
+
+        Moves the specified folder to the new position and adjusts other folders accordingly.
+
+        Args:
+            folder_id: ID of the folder to reorder
+            new_position: New position (0-based index) within the parent
+            parent_id: Parent ID for validation
+
+        Returns:
+            List of all folders in the parent with updated display_order
+
+        Raises:
+            FolderNotFoundException: If folder or parent not found
+            ValueError: If folder is not in the specified parent
+        """
+        # Validate folder exists and belongs to parent
+        folder = self.get_folder_by_id(folder_id)
+
+        if folder.parent_id != parent_id:
+            raise ValueError(f"Folder {folder_id} does not belong to parent {parent_id}")
+
+        # Validate parent exists if not None
+        if parent_id is not None:
+            parent = self.get_folder_by_id(parent_id)
+
+        # Get all folders in the same parent ordered by current display_order
+        all_folders = self.repo.get_by_parent_id(parent_id)
+
+        # Sort by display_order (None values go to end)
+        all_folders.sort(key=lambda f: (f.display_order is None, f.display_order or 0, f.created_at))
+
+        if not all_folders:
+            return []
+
+        # Validate new_position is within bounds
+        if new_position < 0 or new_position >= len(all_folders):
+            new_position = max(0, min(new_position, len(all_folders) - 1))
+
+        # Find current position of the folder
+        current_position = next((i for i, f in enumerate(all_folders) if f.id == folder_id), None)
+
+        # Reorder the list
+        if current_position is not None and current_position != new_position:
+            # Remove folder from current position and insert at new position
+            folder_to_move = all_folders.pop(current_position)
+            all_folders.insert(new_position, folder_to_move)
+
+        # Update display_order for all folders
+        for i, f in enumerate(all_folders):
+            f.display_order = i
+            self.repo.update(f)
+
+        return all_folders
