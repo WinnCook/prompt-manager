@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import { useFolderStore, usePromptStore, useUIStore } from './store'
-import { FolderTree, PromptGrid, EditModal, NewFolderButton, DeleteFolderButton, SearchBar, SearchResults, CommandPalette, ShortcutsHelp, VariableFillDialog } from './components'
+import { FolderTree, PromptGrid, PromptList, EditModal, NewFolderButton, DeleteFolderButton, SearchBar, SearchResults, CommandPalette, ShortcutsHelp, VariableFillDialog, ViewToggle } from './components'
 import { EnhanceCompareModal } from './components/EnhanceCompareModal'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { promptApi } from './services'
@@ -12,7 +12,7 @@ function App() {
   // Zustand stores
   const { folders, loading, error, loadFolders, createFolder } = useFolderStore()
   const { prompts, loadPrompts, duplicatePrompt, deletePrompt, movePrompt } = usePromptStore()
-  const { selectedFolderId, openEditModal, showToast } = useUIStore()
+  const { selectedFolderId, viewMode, openEditModal, showToast } = useUIStore()
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -350,18 +350,21 @@ function App() {
             <>
               <div className="content-header">
                 <h2>Prompts</h2>
-                {selectedFolderId !== null && (
-                  <button
-                    className="btn-primary"
-                    onClick={() => openEditModal()}
-                  >
-                    + New Prompt
-                  </button>
-                )}
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <ViewToggle />
+                  {selectedFolderId !== null && (
+                    <button
+                      className="btn-primary"
+                      onClick={() => openEditModal()}
+                    >
+                      + New Prompt
+                    </button>
+                  )}
+                </div>
               </div>
               {selectedFolderId === null ? (
                 <p>Select a folder to view prompts</p>
-              ) : (
+              ) : viewMode === 'grid' ? (
                 <PromptGrid
                   prompts={prompts}
                   onCopy={handleCopy}
@@ -369,6 +372,20 @@ function App() {
                   onDuplicate={handleDuplicate}
                   onDelete={handleDelete}
                   onEnhance={handleEnhance}
+                />
+              ) : (
+                <PromptList
+                  prompts={prompts}
+                  folderId={selectedFolderId}
+                  onCopy={handleCopy}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onEnhance={handleEnhance}
+                  onReorderComplete={() => {
+                    if (selectedFolderId !== null) {
+                      loadPrompts({ folder_id: selectedFolderId });
+                    }
+                  }}
                 />
               )}
             </>
