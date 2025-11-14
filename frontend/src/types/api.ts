@@ -29,24 +29,28 @@ export interface Prompt {
   id: number;
   folder_id: number;
   title: string;
+  description?: string | null;
   content: string;
   original_content: string | null;
   is_ai_enhanced: boolean;
   tags: string[];
   created_at: string;
   updated_at: string;
+  version?: number;
   versions?: Version[];
 }
 
 export interface PromptCreate {
   folder_id: number;
   title: string;
+  description?: string;
   content: string;
   tags?: string[];
 }
 
 export interface PromptUpdate {
   title?: string;
+  description?: string;
   content?: string;
   tags?: string[];
 }

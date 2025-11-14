@@ -76,6 +76,7 @@ class PromptService:
         folder_id: int,
         title: str,
         content: str,
+        description: Optional[str] = None,
         tags: Optional[List[str]] = None
     ) -> Prompt:
         """
@@ -85,6 +86,7 @@ class PromptService:
             folder_id: Folder ID
             title: Prompt title
             content: Prompt content
+            description: Optional description
             tags: Optional list of tags
 
         Returns:
@@ -102,6 +104,7 @@ class PromptService:
         prompt = Prompt(
             folder_id=folder_id,
             title=title,
+            description=description,
             content=content,
             original_content=content,
             tags=",".join(tags) if tags else None,
@@ -118,6 +121,7 @@ class PromptService:
         self,
         prompt_id: int,
         title: Optional[str] = None,
+        description: Optional[str] = None,
         content: Optional[str] = None,
         tags: Optional[List[str]] = None
     ) -> Prompt:
@@ -127,6 +131,7 @@ class PromptService:
         Args:
             prompt_id: Prompt ID
             title: New title
+            description: New description
             content: New content
             tags: New tags
 
@@ -141,6 +146,8 @@ class PromptService:
         # Update fields
         if title is not None:
             prompt.title = title
+        if description is not None:
+            prompt.description = description
         if content is not None:
             # Create version if content changed
             if prompt.content != content:
@@ -240,6 +247,38 @@ class PromptService:
             content=original.content,
             tags=tags
         )
+
+    def search_prompts(
+        self,
+        query: str,
+        folder_id: Optional[int] = None,
+        tags: Optional[List[str]] = None,
+        limit: int = 50,
+        offset: int = 0
+    ) -> Tuple[List[Prompt], int]:
+        """
+        Search prompts by query string.
+
+        Args:
+            query: Search query
+            folder_id: Optional folder filter
+            tags: Optional tag filters
+            limit: Number of results
+            offset: Pagination offset
+
+        Returns:
+            Tuple of (prompts list, total count)
+
+        Raises:
+            FolderNotFoundException: If folder_id provided but folder not found
+        """
+        # Validate folder exists if provided
+        if folder_id is not None:
+            folder = self.folder_repo.get_by_id(folder_id)
+            if not folder:
+                raise FolderNotFoundException(folder_id)
+
+        return self.repo.search(query, folder_id, tags, limit, offset)
 
     def _create_version(self, prompt_id: int, content: str, created_by: str) -> Version:
         """Create a version entry for a prompt."""

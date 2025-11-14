@@ -36,11 +36,18 @@ def get_db():
 
 
 def init_db():
-    """Initialize database - create all tables."""
+    """Initialize database - create all tables and run migrations."""
     from app.db.models import Folder, Prompt, Version, ClaudeJob
 
     # Create all tables
     Base.metadata.create_all(bind=engine)
+
+    # Run migrations
+    try:
+        from migrations import migration_003_add_display_order
+        migration_003_add_display_order.migrate()
+    except Exception as e:
+        print(f"[WARNING] Migration failed: {e}")
 
     # Create root folder if it doesn't exist
     db = SessionLocal()

@@ -65,13 +65,22 @@ class FolderService:
 
     def get_folder_tree(self) -> List[Dict[str, Any]]:
         """
-        Get complete folder tree.
+        Get complete folder tree (excludes root, returns its children).
 
         Returns:
-            Folder tree structure
+            Folder tree structure starting with root's children
         """
         folders = self.repo.get_all()
-        return self.build_folder_tree(folders)
+        tree = self.build_folder_tree(folders)
+
+        # Find root folder and return its children instead
+        # Root is the folder with parent_id = None and name = "Root"
+        for folder in tree:
+            if folder["parent_id"] is None and folder["name"] == "Root":
+                return folder["children"]
+
+        # If no root found, return empty list
+        return []
 
     def get_folder_by_id(self, folder_id: int) -> Folder:
         """
@@ -169,8 +178,14 @@ class FolderService:
 
         Raises:
             FolderNotFoundException: If folder not found
+            InvalidParentFolderException: If trying to delete root
         """
         folder = self.get_folder_by_id(folder_id)
+
+        # Prevent deletion of root folder
+        if folder.parent_id is None and folder.name == "Root":
+            raise InvalidParentFolderException("Cannot delete root folder")
+
         self.repo.delete(folder)
 
     def move_folder(self, folder_id: int, new_parent_id: Optional[int]) -> Folder:

@@ -8,6 +8,7 @@ interface PromptGridProps {
   onEdit?: (prompt: Prompt) => void;
   onDuplicate?: (prompt: Prompt) => void;
   onDelete?: (prompt: Prompt) => void;
+  onEnhance?: (prompt: Prompt) => void;
 }
 
 export function PromptGrid({
@@ -16,6 +17,7 @@ export function PromptGrid({
   onEdit,
   onDuplicate,
   onDelete,
+  onEnhance,
 }: PromptGridProps) {
   if (prompts.length === 0) {
     return (
@@ -36,6 +38,7 @@ export function PromptGrid({
           onEdit={onEdit}
           onDuplicate={onDuplicate}
           onDelete={onDelete}
+          onEnhance={onEnhance}
         />
       ))}
     </div>

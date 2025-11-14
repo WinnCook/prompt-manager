@@ -3,7 +3,7 @@ Prompt repository - data access layer for prompts.
 """
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 
 from app.db.models import Prompt, Version
 
@@ -124,3 +124,50 @@ class PromptRepository:
             Number of versions
         """
         return self.db.query(Version).filter(Version.prompt_id == prompt_id).count()
+
+    def search(
+        self,
+        query: str,
+        folder_id: Optional[int] = None,
+        tags: Optional[List[str]] = None,
+        limit: int = 50,
+        offset: int = 0
+    ) -> tuple[List[Prompt], int]:
+        """
+        Search prompts by query string.
+
+        Args:
+            query: Search query (searches title, description, content, tags)
+            folder_id: Optional folder filter
+            tags: Optional tag filters
+            limit: Number of results
+            offset: Pagination offset
+
+        Returns:
+            Tuple of (prompts list, total count)
+        """
+        db_query = self.db.query(Prompt)
+
+        # Search across title, description, content, and tags
+        if query:
+            search_filter = or_(
+                Prompt.title.ilike(f"%{query}%"),
+                Prompt.description.ilike(f"%{query}%"),
+                Prompt.content.ilike(f"%{query}%"),
+                Prompt.tags.ilike(f"%{query}%")
+            )
+            db_query = db_query.filter(search_filter)
+
+        # Filter by folder
+        if folder_id is not None:
+            db_query = db_query.filter(Prompt.folder_id == folder_id)
+
+        # Filter by tags
+        if tags:
+            for tag in tags:
+                db_query = db_query.filter(Prompt.tags.ilike(f"%{tag}%"))
+
+        total = db_query.count()
+        prompts = db_query.order_by(desc(Prompt.updated_at)).offset(offset).limit(limit).all()
+
+        return prompts, total

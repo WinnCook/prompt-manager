@@ -10,6 +10,7 @@ class PromptBase(BaseModel):
     """Base prompt model with shared attributes."""
 
     title: str = Field(..., min_length=1, max_length=500)
+    description: Optional[str] = Field(None, max_length=1000)
     content: str = Field(..., min_length=1)
     tags: Optional[List[str]] = []
 
@@ -25,6 +26,7 @@ class PromptUpdate(BaseModel):
     """Model for updating a prompt."""
 
     title: Optional[str] = Field(None, min_length=1, max_length=500)
+    description: Optional[str] = Field(None, max_length=1000)
     content: Optional[str] = Field(None, min_length=1)
     tags: Optional[List[str]] = None
 
@@ -61,6 +63,7 @@ class PromptResponse(BaseModel):
     id: int
     folder_id: int
     title: str
+    description: Optional[str] = None
     content: str
     tags: List[str] = []
     original_content: Optional[str]

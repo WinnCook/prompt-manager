@@ -1,12 +1,13 @@
 """
 Prompt API routes.
 """
-from typing import Optional
+from typing import Optional, List
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.services.prompt_service import PromptService
+from app.services.claude_service import ClaudeService
 from app.models.prompt import (
     PromptCreate,
     PromptUpdate,
@@ -15,14 +16,66 @@ from app.models.prompt import (
     PromptResponse,
     PromptListResponse
 )
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/api/prompts", tags=["prompts"])
+
+
+@router.get("/search", response_model=PromptListResponse)
+def search_prompts(
+    q: str = Query(..., min_length=1, description="Search query"),
+    folder_id: Optional[int] = Query(None, description="Filter by folder"),
+    tags: Optional[List[str]] = Query(None, description="Filter by tags"),
+    limit: int = Query(50, ge=1, le=10000),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db)
+):
+    """
+    Search prompts by query string.
+
+    Args:
+        q: Search query (searches title, description, content, tags)
+        folder_id: Optional folder filter
+        tags: Optional tag filters
+        limit: Number of results (1-10000)
+        offset: Pagination offset
+        db: Database session
+
+    Returns:
+        List of matching prompts with pagination info
+    """
+    service = PromptService(db)
+    prompts, total = service.search_prompts(q, folder_id, tags, limit, offset)
+
+    # Convert tags string to list for each prompt
+    prompts_data = []
+    for prompt in prompts:
+        prompts_data.append({
+            "id": prompt.id,
+            "folder_id": prompt.folder_id,
+            "title": prompt.title,
+            "description": prompt.description,
+            "content": prompt.content,
+            "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
+            "original_content": prompt.original_content,
+            "is_ai_enhanced": prompt.is_ai_enhanced,
+            "created_at": prompt.created_at,
+            "updated_at": prompt.updated_at,
+            "versions": []
+        })
+
+    return {
+        "prompts": prompts_data,
+        "total": total,
+        "limit": limit,
+        "offset": offset
+    }
 
 
 @router.get("", response_model=PromptListResponse)
 def list_prompts(
     folder_id: Optional[int] = Query(None),
-    limit: int = Query(50, ge=1, le=100),
+    limit: int = Query(50, ge=1, le=10000),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db)
 ):
@@ -48,6 +101,7 @@ def list_prompts(
             "id": prompt.id,
             "folder_id": prompt.folder_id,
             "title": prompt.title,
+            "description": prompt.description,
             "content": prompt.content,
             "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
             "original_content": prompt.original_content,
@@ -63,6 +117,102 @@ def list_prompts(
         "limit": limit,
         "offset": offset
     }
+
+
+class PromptEnhanceRequest(BaseModel):
+    """Request model for prompt enhancement."""
+    custom_instruction: Optional[str] = None
+
+
+class PromptEnhanceResponse(BaseModel):
+    """Response model for prompt enhancement."""
+    original: str
+    enhanced: str
+
+
+@router.post("/{prompt_id}/enhance", response_model=PromptEnhanceResponse)
+def enhance_prompt(
+    prompt_id: int,
+    request: PromptEnhanceRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Enhance a prompt using Claude CLI.
+
+    Args:
+        prompt_id: Prompt ID to enhance
+        request: Enhancement request with optional custom instruction
+        db: Database session
+
+    Returns:
+        Original and enhanced prompt text
+    """
+    prompt_service = PromptService(db)
+    claude_service = ClaudeService()
+
+    # Get the prompt
+    prompt = prompt_service.get_prompt_by_id(prompt_id)
+
+    # Enhance using Claude CLI
+    try:
+        print(f"[ENHANCE] Starting enhancement for prompt {prompt_id}")
+        print(f"[ENHANCE] Original content: {prompt.content[:100]}...")
+        enhanced = claude_service.enhance_prompt(
+            original_prompt=prompt.content,
+            enhancement_instruction=request.custom_instruction
+        )
+        print(f"[ENHANCE] Success! Enhanced content: {enhanced[:100]}...")
+
+        return {
+            "original": prompt.content,
+            "enhanced": enhanced
+        }
+    except Exception as e:
+        print(f"[ENHANCE ERROR] {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        from fastapi import HTTPException
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to enhance prompt: {str(e)}"
+        )
+
+
+class PromptApplyEnhancementRequest(BaseModel):
+    """Request model for applying enhancement."""
+    enhanced_content: str
+
+
+@router.post("/{prompt_id}/apply-enhancement", response_model=PromptResponse)
+def apply_enhancement(
+    prompt_id: int,
+    request: PromptApplyEnhancementRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Apply an enhanced version to a prompt (creates new version).
+
+    Args:
+        prompt_id: Prompt ID
+        request: Request with enhanced content
+        db: Database session
+
+    Returns:
+        Updated prompt
+    """
+    service = PromptService(db)
+
+    # Update the prompt with enhanced content (will create version automatically)
+    prompt = service.update_prompt(
+        prompt_id=prompt_id,
+        content=request.enhanced_content
+    )
+
+    # Mark as AI enhanced
+    prompt.is_ai_enhanced = True
+    prompt = service.repo.update(prompt)
+
+    return prompt
 
 
 @router.get("/{prompt_id}", response_model=PromptResponse)
@@ -85,6 +235,7 @@ def get_prompt(prompt_id: int, db: Session = Depends(get_db)):
         "id": prompt.id,
         "folder_id": prompt.folder_id,
         "title": prompt.title,
+        "description": prompt.description,
         "content": prompt.content,
         "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
         "original_content": prompt.original_content,
@@ -112,6 +263,7 @@ def create_prompt(prompt_data: PromptCreate, db: Session = Depends(get_db)):
     prompt = service.create_prompt(
         folder_id=prompt_data.folder_id,
         title=prompt_data.title,
+        description=prompt_data.description,
         content=prompt_data.content,
         tags=prompt_data.tags
     )
@@ -123,6 +275,7 @@ def create_prompt(prompt_data: PromptCreate, db: Session = Depends(get_db)):
         "id": prompt.id,
         "folder_id": prompt.folder_id,
         "title": prompt.title,
+        "description": prompt.description,
         "content": prompt.content,
         "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
         "original_content": prompt.original_content,
@@ -155,6 +308,7 @@ def update_prompt(
     prompt = service.update_prompt(
         prompt_id=prompt_id,
         title=prompt_data.title,
+        description=prompt_data.description,
         content=prompt_data.content,
         tags=prompt_data.tags
     )
