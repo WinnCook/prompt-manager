@@ -100,6 +100,14 @@ class PromptService:
         if not folder:
             raise FolderNotFoundException(folder_id)
 
+        # Get the next display_order for this folder
+        all_prompts, _ = self.repo.get_all(folder_id=folder_id, limit=10000, offset=0)
+        max_order = 0
+        for p in all_prompts:
+            if p.display_order is not None and p.display_order > max_order:
+                max_order = p.display_order
+        next_display_order = max_order + 1
+
         # Create prompt
         prompt = Prompt(
             folder_id=folder_id,
@@ -108,7 +116,8 @@ class PromptService:
             content=content,
             original_content=content,
             tags=",".join(tags) if tags else None,
-            is_ai_enhanced=False
+            is_ai_enhanced=False,
+            display_order=next_display_order
         )
         prompt = self.repo.create(prompt)
 

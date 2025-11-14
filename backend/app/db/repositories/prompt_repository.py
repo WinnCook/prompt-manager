@@ -29,6 +29,9 @@ class PromptRepository:
         """
         Get prompts with optional folder filter and pagination.
 
+        Prompts are ordered by display_order (ascending), then by created_at (descending)
+        for prompts without a display_order.
+
         Args:
             folder_id: Filter by folder ID
             limit: Number of results
@@ -43,7 +46,14 @@ class PromptRepository:
             query = query.filter(Prompt.folder_id == folder_id)
 
         total = query.count()
-        prompts = query.order_by(desc(Prompt.created_at)).offset(offset).limit(limit).all()
+
+        # Order by display_order first (NULLs last), then by created_at descending
+        # This ensures custom-ordered prompts appear first in their order,
+        # followed by newly created prompts without display_order
+        prompts = query.order_by(
+            Prompt.display_order.asc().nullslast(),
+            desc(Prompt.created_at)
+        ).offset(offset).limit(limit).all()
 
         return prompts, total
 
