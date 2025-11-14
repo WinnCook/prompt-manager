@@ -25,6 +25,8 @@ Prompt Manager is a productivity tool designed to help users organize their prom
 
 ### UI Features
 - **Intuitive Interface**: Left navigation panel, right content area with hover actions
+- **Multiple Views**: Toggle between grid and list view with persistent preference
+- **Drag-and-Drop Reordering**: Rearrange prompts in list view with smooth animations
 - **Quick Actions**: Copy, edit, duplicate, and delete with single clicks
 - **Keyboard Shortcuts**: Efficient navigation and operations
 - **Toast Notifications**: Visual feedback for all operations
@@ -36,6 +38,7 @@ Prompt Manager is a productivity tool designed to help users organize their prom
 - **Backend**: Python 3.11 + FastAPI + SQLAlchemy
 - **Database**: SQLite with automatic schema management
 - **State Management**: Zustand
+- **Drag-and-Drop**: @dnd-kit (modern, accessible drag-and-drop library)
 - **Styling**: CSS Modules
 - **AI Integration**: Claude CLI (planned)
 
@@ -207,6 +210,7 @@ Variables are detected automatically and displayed in the UI for easy substituti
 - `DELETE /api/prompts/{id}` - Delete prompt
 - `POST /api/prompts/{id}/move` - Move prompt to different folder
 - `POST /api/prompts/{id}/duplicate` - Duplicate prompt
+- `POST /api/prompts/reorder` - Reorder prompts within a folder
 
 **Note**: List and search endpoints support up to `limit=10000` for bulk operations.
 
@@ -231,6 +235,7 @@ Variables are detected automatically and displayed in the UI for easy substituti
 - `tags` (VARCHAR(500), NULLABLE) - Comma-separated list
 - `original_content` (TEXT, NULLABLE)
 - `is_ai_enhanced` (BOOLEAN, DEFAULT FALSE)
+- `display_order` (INTEGER, NULLABLE, INDEXED) - User-defined sort order within folder
 - `created_at` (DATETIME)
 - `updated_at` (DATETIME)
 
@@ -258,7 +263,10 @@ Variables are detected automatically and displayed in the UI for easy substituti
 - **Hot Module Replacement**: Vite provides instant updates
 
 ### Database Migrations
-When adding new fields (like `description`), use SQLite ALTER TABLE:
+The application includes automatic migration scripts in `backend/migrations/` that run on startup:
+- `add_display_order.py`: Adds display_order column for prompt reordering (Sprint 3)
+
+When adding new fields manually, use SQLite ALTER TABLE:
 ```sql
 ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 ```
@@ -281,7 +289,16 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 
 ## Recent Updates
 
-### Sprint 2 Enhancements (Current)
+### Sprint 3 Completion (November 14, 2025) ✅
+- **List View**: Toggle between grid and list view with persistent preference
+- **Drag-and-Drop Reordering**: Rearrange prompts in list view with smooth animations
+- **Display Order**: Database-backed ordering system that persists across both views
+- **@dnd-kit Integration**: Modern, accessible drag-and-drop library
+- **Optimistic UI**: Instant feedback with error rollback
+- **Migration System**: Automatic database migrations on startup
+- 15/15 tasks completed (100%), 36 story points delivered
+
+### Sprint 2 Enhancements
 - Added description field for prompts across full stack
 - Implemented smart search with tag filtering
 - Root folder now hidden from UI (implicit root structure)
