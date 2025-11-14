@@ -24,7 +24,7 @@ Prompt Manager is a productivity tool designed to help users organize their prom
 - **Cascade Delete**: Safely delete folders with automatic cleanup of children and prompts
 
 ### UI Features
-- **Collapsible Sidebar**: Toggle button to collapse/expand folder navigation for more screen space
+- **Resizable Sidebar**: Drag the divider to adjust sidebar width from 200px to 600px, with width persisting across sessions
 - **Intuitive Interface**: Left navigation panel, right content area with hover actions
 - **Multiple Views**: Toggle between grid and list view with persistent preference
 - **Drag-and-Drop Reordering**: Rearrange prompts in list view with smooth animations
@@ -294,8 +294,14 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 
 ## Recent Updates
 
+### Sprint 4 Completion (November 14, 2025) ✅
+- **Resizable Sidebar**: Replaced collapse button with draggable divider for flexible width adjustment
+- **Drag-to-Resize**: Smooth resizing with visual feedback (hover and drag states)
+- **Smart Constraints**: Min 200px, Max 600px to ensure usability
+- **Persistent Width**: User's preferred width saved to localStorage
+
 ### UX Enhancements (November 14, 2025) ✅
-- **Collapsible Sidebar**: Toggle button to collapse/expand folder navigation with persisted state
+- **Collapsible Sidebar**: ~~Toggle button to collapse/expand folder navigation with persisted state~~ (replaced by resizable divider)
 - **Folder Rename**: Inline rename functionality with pencil icon on selected folders
 - **Folder Reordering**: Up/down arrow buttons to reorder folders within their parent
 - **Improved Error Handling**: Better feedback when dropping folders into same parent

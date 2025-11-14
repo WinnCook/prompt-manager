@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import { useFolderStore, usePromptStore, useUIStore } from './store'
-import { FolderTree, PromptGrid, PromptList, EditModal, NewFolderButton, DeleteFolderButton, SearchBar, SearchResults, CommandPalette, ShortcutsHelp, VariableFillDialog, ViewToggle } from './components'
+import { FolderTree, PromptGrid, PromptList, EditModal, NewFolderButton, DeleteFolderButton, SearchBar, SearchResults, CommandPalette, ShortcutsHelp, VariableFillDialog, ViewToggle, ResizableDivider } from './components'
 import { EnhanceCompareModal } from './components/EnhanceCompareModal'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { promptApi } from './services'
@@ -12,7 +12,7 @@ function App() {
   // Zustand stores
   const { folders, loading, error, loadFolders, createFolder } = useFolderStore()
   const { prompts, loadPrompts, duplicatePrompt, deletePrompt, movePrompt } = usePromptStore()
-  const { selectedFolderId, viewMode, openEditModal, showToast, isSidebarCollapsed, toggleSidebar } = useUIStore()
+  const { selectedFolderId, viewMode, openEditModal, showToast, sidebarWidth } = useUIStore()
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -328,14 +328,7 @@ function App() {
         </div>
       </header>
       <main className="app-main">
-        <button
-          className="sidebar-toggle"
-          onClick={toggleSidebar}
-          title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isSidebarCollapsed ? '▶' : '◀'}
-        </button>
-        <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+        <div className="sidebar" style={{ width: `${sidebarWidth}px` }}>
           <div className="sidebar-content">
             <h2>Folders</h2>
             {!loading && !error && <NewFolderButton />}
@@ -345,6 +338,7 @@ function App() {
           </div>
           {!loading && !error && <DeleteFolderButton />}
         </div>
+        <ResizableDivider />
         <div className="content">
           {isSearching ? (
             <SearchResults

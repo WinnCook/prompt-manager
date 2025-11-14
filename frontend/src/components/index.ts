@@ -14,3 +14,4 @@ export { CommandPalette } from './CommandPalette';
 export { ShortcutsHelp } from './ShortcutsHelp';
 export { VariableFillDialog } from './VariableFillDialog';
 export { ViewToggle } from './ViewToggle';
+export { ResizableDivider } from './ResizableDivider';

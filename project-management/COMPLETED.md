@@ -2,6 +2,57 @@
 
 This document tracks all completed tasks across all sprints with notes, decisions made, and any follow-up items needed.
 
+**Last Updated**: November 14, 2025
+
+---
+
+## Sprint 4: Resizable Sidebar (November 14, 2025) ✅
+
+**Duration**: 1 day (~3 hours)
+**Story Points**: 18
+**Status**: ✅ COMPLETED
+
+### Goal
+Replace collapsible sidebar toggle button with a draggable divider that allows users to resize the sidebar to their preferred width, solving the issue of folder names being hidden or overlapping with UI controls.
+
+### Completed Features
+- ✅ Removed collapse/expand toggle button
+- ✅ Implemented draggable divider component with custom drag handlers
+- ✅ Added visual feedback (hover: dark gray, drag: blue)
+- ✅ Enforced min (200px) and max (600px) width constraints
+- ✅ Persisted sidebar width to localStorage
+- ✅ Updated UI state management (replaced boolean with numeric width)
+- ✅ Smooth real-time resize with no performance issues
+
+### Technical Implementation
+- **New Components**: ResizableDivider.tsx (custom drag handler)
+- **State Management**: Updated uiStore with `sidebarWidth` number state
+- **Styling**: Custom CSS with hover/active states and col-resize cursor
+- **Edge Cases**: Text selection prevention, event cleanup, invalid values handling
+
+### Files Changed
+- Created: `ResizableDivider.tsx`, `ResizableDivider.css`
+- Modified: `uiStore.ts`, `App.tsx`, `App.css`, `components/index.ts`
+
+### User Feedback
+**User**: "it all works great i tested it!!"
+**Result**: Immediate user approval, zero bugs
+
+### Key Learnings
+- Custom drag handlers provide better UX than CSS resize property
+- Event listener cleanup crucial to prevent memory leaks
+- Inline styles best for dynamic values (width)
+- Wider invisible hit area makes small UI elements easier to interact with
+
+### Metrics
+- Lines Added: ~120
+- Lines Removed: ~35
+- TypeScript Errors: 0
+- Console Warnings: 0
+- Performance: 60fps smooth dragging
+
+**Documentation**: See `SPRINT_04.md` and `SPRINT_04_COMPLETION.md` for full details.
+
 ---
 
 ## Sprint 1: Foundation

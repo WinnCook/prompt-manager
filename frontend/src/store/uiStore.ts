@@ -3,6 +3,11 @@ import { persist } from 'zustand/middleware';
 
 type ViewMode = 'grid' | 'list';
 
+// Sidebar width constraints
+const MIN_SIDEBAR_WIDTH = 200;
+const MAX_SIDEBAR_WIDTH = 600;
+const DEFAULT_SIDEBAR_WIDTH = 280;
+
 interface UIState {
   // Selected folder
   selectedFolderId: number | null;
@@ -20,8 +25,8 @@ interface UIState {
   closeEditModal: () => void;
 
   // Sidebar
-  isSidebarCollapsed: boolean;
-  toggleSidebar: () => void;
+  sidebarWidth: number;
+  setSidebarWidth: (width: number) => void;
 
   // Search
   searchQuery: string;
@@ -64,10 +69,12 @@ export const useUIStore = create<UIState>()(
       }),
 
       // Sidebar
-      isSidebarCollapsed: false,
-      toggleSidebar: () => set((state) => ({
-        isSidebarCollapsed: !state.isSidebarCollapsed,
-      })),
+      sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
+      setSidebarWidth: (width) => {
+        // Clamp width to min/max constraints
+        const clampedWidth = Math.max(MIN_SIDEBAR_WIDTH, Math.min(MAX_SIDEBAR_WIDTH, width));
+        set({ sidebarWidth: clampedWidth });
+      },
 
       // Search
       searchQuery: '',
@@ -90,7 +97,7 @@ export const useUIStore = create<UIState>()(
       name: 'prompt-manager-ui', // Persist UI preferences
       partialize: (state) => ({
         // Only persist these values
-        isSidebarCollapsed: state.isSidebarCollapsed,
+        sidebarWidth: state.sidebarWidth,
         selectedFolderId: state.selectedFolderId,
         viewMode: state.viewMode,
       }),
