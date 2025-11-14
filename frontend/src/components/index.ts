@@ -1,6 +1,7 @@
 export { FolderTree } from './FolderTree';
 export { PromptCard } from './PromptCard';
 export { PromptGrid } from './PromptGrid';
+export { PromptListItem } from './PromptListItem';
 export { EditModal } from './EditModal';
 export { NewFolderButton } from './NewFolderButton';
 export { ConfirmDialog } from './ConfirmDialog';

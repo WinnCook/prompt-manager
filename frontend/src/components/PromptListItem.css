@@ -1,0 +1,145 @@
+.prompt-list-item {
+  display: grid;
+  grid-template-columns: 40px 1fr 2fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.prompt-list-item:hover {
+  border-color: #4a90e2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-list-item.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+/* Drag Handle */
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.drag-handle:hover {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Title */
+.prompt-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #1f2937;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.prompt-title:hover {
+  color: #4a90e2;
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  color: #8b5cf6;
+}
+
+/* Preview */
+.prompt-preview {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Actions */
+.prompt-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.prompt-list-item:hover .prompt-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.enhance-btn:hover {
+  background: #ede9fe;
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.delete-btn:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .prompt-list-item {
+    grid-template-columns: 40px 1fr auto;
+  }
+
+  .prompt-preview {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .prompt-actions {
+    opacity: 1;
+  }
+
+  .action-btn {
+    padding: 6px;
+  }
+}
