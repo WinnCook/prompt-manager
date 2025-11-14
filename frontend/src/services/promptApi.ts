@@ -4,6 +4,7 @@ import type {
   PromptCreate,
   PromptUpdate,
   PromptMove,
+  PromptReorder,
   PromptListResponse,
   PromptListParams,
   ApiResponse,
@@ -144,6 +145,15 @@ export const promptApi = {
     }
 
     return api.get<PromptListResponse>(`/api/prompts/search?${queryParams.toString()}`);
+  },
+
+  /**
+   * Reorder a prompt within its folder
+   * @param data - Reorder data (prompt_id, new_position, folder_id)
+   * @returns Updated list of all prompts in the folder
+   */
+  async reorder(data: PromptReorder): Promise<ApiResponse<PromptListResponse>> {
+    return api.post<PromptListResponse>('/api/prompts/reorder', data);
   },
 };
 

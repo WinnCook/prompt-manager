@@ -59,6 +59,12 @@ export interface PromptMove {
   folder_id: number;
 }
 
+export interface PromptReorder {
+  prompt_id: number;
+  new_position: number;
+  folder_id: number;
+}
+
 export interface PromptListResponse {
   prompts: Prompt[];
   total: number;
