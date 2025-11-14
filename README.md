@@ -294,6 +294,9 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 
 ## Recent Updates
 
+### Sprint 4 UI Enhancement (November 14, 2025) ✅
+- **AI Button Sizing**: Doubled AI enhance button size in grid mode (36px → 72px) for improved aesthetics and better visual balance
+
 ### Sprint 4 Completion (November 14, 2025) ✅
 - **Resizable Sidebar**: Replaced collapse button with draggable divider for flexible width adjustment
 - **Drag-to-Resize**: Smooth resizing with visual feedback (hover and drag states)
