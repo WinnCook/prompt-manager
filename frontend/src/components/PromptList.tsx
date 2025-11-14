@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -49,9 +49,9 @@ export const PromptList = ({
   const { showToast } = useUIStore();
 
   // Update items when prompts prop changes
-  useState(() => {
+  useEffect(() => {
     setItems(prompts);
-  });
+  }, [prompts]);
 
   // Configure drag sensors
   const sensors = useSensors(
