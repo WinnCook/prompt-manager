@@ -44,6 +44,14 @@ class PromptDuplicate(BaseModel):
     folder_id: Optional[int] = None
 
 
+class PromptReorder(BaseModel):
+    """Model for reordering prompts within a folder."""
+
+    prompt_id: int = Field(..., description="ID of the prompt to reorder")
+    new_position: int = Field(..., ge=0, description="New position (0-based index)")
+    folder_id: int = Field(..., description="Folder ID (for validation)")
+
+
 class VersionResponse(BaseModel):
     """Model for version history response."""
 

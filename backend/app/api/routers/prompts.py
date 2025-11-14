@@ -13,6 +13,7 @@ from app.models.prompt import (
     PromptUpdate,
     PromptMove,
     PromptDuplicate,
+    PromptReorder,
     PromptResponse,
     PromptListResponse
 )
@@ -374,3 +375,64 @@ def duplicate_prompt(
         folder_id=duplicate_data.folder_id
     )
     return prompt
+
+
+@router.post("/reorder", response_model=PromptListResponse)
+def reorder_prompts(
+    reorder_data: PromptReorder,
+    db: Session = Depends(get_db)
+):
+    """
+    Reorder a prompt within its folder.
+
+    Moves the specified prompt to a new position and adjusts other prompts
+    in the folder accordingly. All prompts will have their display_order updated.
+
+    Args:
+        reorder_data: Reorder operation data (prompt_id, new_position, folder_id)
+        db: Database session
+
+    Returns:
+        List of all prompts in the folder with updated display_order
+
+    Raises:
+        404: If prompt or folder not found
+        400: If prompt is not in the specified folder
+    """
+    service = PromptService(db)
+
+    try:
+        # Perform reordering
+        updated_prompts = service.reorder_prompts(
+            prompt_id=reorder_data.prompt_id,
+            new_position=reorder_data.new_position,
+            folder_id=reorder_data.folder_id
+        )
+
+        # Convert to response format
+        prompts_data = []
+        for prompt in updated_prompts:
+            prompts_data.append({
+                "id": prompt.id,
+                "folder_id": prompt.folder_id,
+                "title": prompt.title,
+                "description": prompt.description,
+                "content": prompt.content,
+                "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
+                "original_content": prompt.original_content,
+                "is_ai_enhanced": prompt.is_ai_enhanced,
+                "created_at": prompt.created_at,
+                "updated_at": prompt.updated_at,
+                "versions": []
+            })
+
+        return {
+            "prompts": prompts_data,
+            "total": len(prompts_data),
+            "limit": len(prompts_data),
+            "offset": 0
+        }
+
+    except ValueError as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

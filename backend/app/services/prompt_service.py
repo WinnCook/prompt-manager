@@ -280,6 +280,79 @@ class PromptService:
 
         return self.repo.search(query, folder_id, tags, limit, offset)
 
+    def reorder_prompts(self, prompt_id: int, new_position: int, folder_id: int) -> List[Prompt]:
+        """
+        Reorder a prompt within its folder.
+
+        Moves the specified prompt to the new position and adjusts other prompts accordingly.
+
+        Args:
+            prompt_id: ID of the prompt to reorder
+            new_position: New position (0-based index) in the folder
+            folder_id: Folder ID for validation
+
+        Returns:
+            List of all prompts in the folder with updated display_order
+
+        Raises:
+            PromptNotFoundException: If prompt not found
+            FolderNotFoundException: If folder not found
+            ValueError: If prompt is not in the specified folder
+        """
+        # Validate prompt exists and belongs to folder
+        prompt = self.repo.get_by_id(prompt_id)
+        if not prompt:
+            raise PromptNotFoundException(prompt_id)
+
+        if prompt.folder_id != folder_id:
+            raise ValueError(f"Prompt {prompt_id} does not belong to folder {folder_id}")
+
+        # Validate folder exists
+        folder = self.folder_repo.get_by_id(folder_id)
+        if not folder:
+            raise FolderNotFoundException(folder_id)
+
+        # Get all prompts in the folder ordered by current display_order
+        all_prompts, _ = self.repo.get_all(folder_id=folder_id, limit=10000, offset=0)
+
+        if not all_prompts:
+            return []
+
+        # Validate new_position is within bounds
+        if new_position < 0 or new_position >= len(all_prompts):
+            new_position = max(0, min(new_position, len(all_prompts) - 1))
+
+        # Find current position of the prompt
+        current_position = None
+        for i, p in enumerate(all_prompts):
+            if p.id == prompt_id:
+                current_position = i
+                break
+
+        if current_position is None:
+            # Prompt not in list, shouldn't happen but handle it
+            current_position = len(all_prompts)
+
+        # Reorder the list
+        if current_position != new_position:
+            # Remove prompt from current position
+            prompt_to_move = all_prompts.pop(current_position)
+            # Insert at new position
+            all_prompts.insert(new_position, prompt_to_move)
+
+        # Update display_order for all prompts
+        for i, p in enumerate(all_prompts):
+            p.display_order = i
+            self.db.add(p)
+
+        self.db.commit()
+
+        # Refresh all prompts to get updated values
+        for p in all_prompts:
+            self.db.refresh(p)
+
+        return all_prompts
+
     def _create_version(self, prompt_id: int, content: str, created_by: str) -> Version:
         """Create a version entry for a prompt."""
         version_number = self.repo.get_version_count(prompt_id) + 1
