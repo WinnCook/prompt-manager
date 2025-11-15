@@ -17,6 +17,8 @@ Prompt Manager is a productivity tool designed to help users organize their prom
 - **Description Field**: Add detailed descriptions to prompts for better organization
 
 ### Advanced Features
+- **Quick Access Widget**: ⭐ **NEW!** Floating always-on-top widget for instant access to your 8 favorite prompts across all applications
+- **Easy Access Toolbar**: Star up to 8 prompts for quick copying from a persistent toolbar
 - **Version Control**: Track original and enhanced versions of prompts
 - **AI Enhancement**: (Planned) Automatic prompt rewriting using Claude CLI
 - **Duplicate Prompts**: Clone prompts with optional title/folder customization
@@ -309,6 +311,24 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 
 ## Recent Updates
 
+### Quick Access Widget (November 15, 2025) ✅ **NEW!**
+- **Floating Widget**: Always-on-top widget for instant access to favorite prompts across all applications
+- **Standalone HTML**: Single-file widget with no build process required
+- **Beautiful UI**: Purple gradient design with smooth animations
+- **One-Click Copy**: Click any prompt to copy to clipboard
+- **Smart Features**: Auto-refresh, toast notifications, variable detection
+- **PowerToys Integration**: Win+Alt+O for always-on-top
+- **Multiple Launch Options**: PowerShell scripts for easy launching
+- **Documentation**: Complete guide in `QUICK_ACCESS_WIDGET.md`
+- **Max 8 Prompts**: Star your most-used prompts for quick access
+
+**How to Use**:
+```bash
+cd prompt-manager
+./launch-quick-access.ps1
+```
+Press `Win + Alt + O` to make it always-on-top.
+
 ### Voice-to-Text Feature (November 14, 2025) ✅
 - **Universal Voice Input**: Added microphone button to all text input fields
 - **Web Speech API Integration**: Browser-native speech recognition with continuous listening
@@ -394,6 +414,7 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 - **API Specification**: [docs/API_SPEC.md](docs/API_SPEC.md)
 - **Onboarding Guide**: [docs/ONBOARDING.md](docs/ONBOARDING.md)
 - **User Guide**: [docs/USER_GUIDE.md](docs/USER_GUIDE.md)
+- **Quick Access Widget**: [QUICK_ACCESS_WIDGET.md](QUICK_ACCESS_WIDGET.md) ⭐ **NEW!**
 
 ## License
 

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import { useFolderStore, usePromptStore, useUIStore } from './store'
-import { FolderTree, PromptGrid, PromptList, EditModal, NewFolderButton, DeleteFolderButton, SearchBar, SearchResults, CommandPalette, ShortcutsHelp, VariableFillDialog, ViewToggle, ResizableDivider, ThemeToggle } from './components'
+import { FolderTree, PromptGrid, PromptList, EditModal, NewFolderButton, DeleteFolderButton, SearchBar, SearchResults, CommandPalette, ShortcutsHelp, VariableFillDialog, ViewToggle, ResizableDivider, ThemeToggle, EasyAccessToolbar } from './components'
 import { EnhanceCompareModal } from './components/EnhanceCompareModal'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { promptApi } from './services'
@@ -469,6 +469,7 @@ function App() {
         }
         onRegenerate={handleRegenerateEnhancement}
       />
+      <EasyAccessToolbar />
     </div>
   )
 }

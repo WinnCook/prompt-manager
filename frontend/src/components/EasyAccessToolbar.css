@@ -1,0 +1,89 @@
+.easy-access-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border-top: 2px solid var(--border-color);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.easy-access-toolbar.minimized {
+  bottom: -60px; /* Hide prompts, show only toggle button */
+}
+
+.toolbar-toggle {
+  width: 100%;
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border: none;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.toolbar-toggle:hover {
+  background: var(--bg-hover);
+}
+
+.toolbar-prompts {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.toolbar-prompts::-webkit-scrollbar {
+  height: 6px;
+}
+
+.toolbar-prompts::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+.toolbar-prompts::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.toolbar-prompt-btn {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 200px;
+}
+
+.toolbar-prompt-btn:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.prompt-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.has-vars,
+.ai-badge {
+  flex-shrink: 0;
+  font-size: 12px;
+}
