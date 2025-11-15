@@ -10,6 +10,7 @@ interface SortableItemProps {
   onEdit: (prompt: Prompt) => void;
   onDelete: (prompt: Prompt) => void;
   onEnhance: (prompt: Prompt) => void;
+  onToggleEasyAccess?: (prompt: Prompt, enable: boolean) => void;
 }
 
 /**
@@ -25,6 +26,7 @@ export const SortableItem = ({
   onEdit,
   onDelete,
   onEnhance,
+  onToggleEasyAccess,
 }: SortableItemProps) => {
   const {
     attributes,
@@ -48,6 +50,7 @@ export const SortableItem = ({
         onEdit={onEdit}
         onDelete={onDelete}
         onEnhance={onEnhance}
+        onToggleEasyAccess={onToggleEasyAccess}
         isDragging={isDragging}
       />
     </div>

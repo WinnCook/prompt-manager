@@ -10,6 +10,7 @@ interface PromptCardProps {
   onDuplicate?: (prompt: Prompt) => void;
   onDelete?: (prompt: Prompt) => void;
   onEnhance?: (prompt: Prompt) => void;
+  onToggleEasyAccess?: (prompt: Prompt, enable: boolean) => void;
 }
 
 export function PromptCard({
@@ -19,6 +20,7 @@ export function PromptCard({
   onDuplicate,
   onDelete,
   onEnhance,
+  onToggleEasyAccess,
 }: PromptCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isAiHovered, setIsAiHovered] = useState(false);
@@ -46,6 +48,11 @@ export function PromptCard({
   const handleEnhance = (e: React.MouseEvent) => {
     e.stopPropagation();
     onEnhance?.(prompt);
+  };
+
+  const handleToggleEasyAccess = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleEasyAccess?.(prompt, !prompt.is_easy_access);
   };
 
   const formatDate = (dateString: string) => {
@@ -88,38 +95,49 @@ export function PromptCard({
           {prompt.title}
           {hasVars && <span className="variable-indicator" title="Contains variables">🎯</span>}
         </h3>
-        {isHovered && (
-          <div className="prompt-actions">
-            <button
-              className="action-button copy"
-              onClick={handleCopy}
-              title="Copy to clipboard"
-            >
-              📋
-            </button>
-            <button
-              className="action-button edit"
-              onClick={handleEdit}
-              title="Edit prompt"
-            >
-              ✏️
-            </button>
-            <button
-              className="action-button duplicate"
-              onClick={handleDuplicate}
-              title="Duplicate prompt"
-            >
-              📑
-            </button>
-            <button
-              className="action-button delete"
-              onClick={handleDelete}
-              title="Delete prompt"
-            >
-              🗑️
-            </button>
-          </div>
-        )}
+        <div className="prompt-actions">
+          {/* Star is always visible */}
+          <button
+            className={`action-button easy-access ${prompt.is_easy_access ? 'active' : ''}`}
+            onClick={handleToggleEasyAccess}
+            title={prompt.is_easy_access ? "Remove from Easy Access" : "Add to Easy Access"}
+          >
+            {prompt.is_easy_access ? '⭐' : '☆'}
+          </button>
+          {/* Other actions only show on hover */}
+          {isHovered && (
+            <>
+              <button
+                className="action-button copy"
+                onClick={handleCopy}
+                title="Copy to clipboard"
+              >
+                📋
+              </button>
+              <button
+                className="action-button edit"
+                onClick={handleEdit}
+                title="Edit prompt"
+              >
+                ✏️
+              </button>
+              <button
+                className="action-button duplicate"
+                onClick={handleDuplicate}
+                title="Duplicate prompt"
+              >
+                📑
+              </button>
+              <button
+                className="action-button delete"
+                onClick={handleDelete}
+                title="Delete prompt"
+              >
+                🗑️
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {prompt.description && (

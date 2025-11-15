@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     # API Settings
     HOST: str = "127.0.0.1"
-    PORT: int = 8002  # Using 8002 to avoid zombie processes on 8001
+    PORT: int = 8003  # Using 8003 to avoid zombie processes on 8002
     DEBUG: bool = True
 
     # Database Settings

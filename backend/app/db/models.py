@@ -38,6 +38,7 @@ class Prompt(Base):
     content = Column(Text, nullable=False)
     original_content = Column(Text, nullable=True)
     is_ai_enhanced = Column(Boolean, default=False)
+    is_easy_access = Column(Boolean, default=False, index=True)  # Easy access floating toolbar
     tags = Column(String(1000), nullable=True)  # Comma-separated tags
     display_order = Column(Integer, nullable=True, index=True)  # User-defined sort order within folder
     created_at = Column(DateTime, default=datetime.utcnow, index=True)

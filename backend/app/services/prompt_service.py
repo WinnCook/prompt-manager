@@ -262,16 +262,20 @@ class PromptService:
         query: str,
         folder_id: Optional[int] = None,
         tags: Optional[List[str]] = None,
+        created_after: Optional[str] = None,
+        created_before: Optional[str] = None,
         limit: int = 50,
         offset: int = 0
     ) -> Tuple[List[Prompt], int]:
         """
-        Search prompts by query string.
+        Search prompts by query string with optional filters.
 
         Args:
             query: Search query
             folder_id: Optional folder filter
             tags: Optional tag filters
+            created_after: Optional date filter (ISO format: YYYY-MM-DD)
+            created_before: Optional date filter (ISO format: YYYY-MM-DD)
             limit: Number of results
             offset: Pagination offset
 
@@ -287,7 +291,7 @@ class PromptService:
             if not folder:
                 raise FolderNotFoundException(folder_id)
 
-        return self.repo.search(query, folder_id, tags, limit, offset)
+        return self.repo.search(query, folder_id, tags, created_after, created_before, limit, offset)
 
     def reorder_prompts(self, prompt_id: int, new_position: int, folder_id: int) -> List[Prompt]:
         """
@@ -361,6 +365,24 @@ class PromptService:
             self.db.refresh(p)
 
         return all_prompts
+
+    def count_easy_access_prompts(self) -> int:
+        """
+        Count the number of prompts marked as easy access.
+
+        Returns:
+            Count of easy access prompts
+        """
+        return self.repo.count_easy_access()
+
+    def get_easy_access_prompts(self) -> List[Prompt]:
+        """
+        Get all prompts marked as easy access.
+
+        Returns:
+            List of easy access prompts (max 8)
+        """
+        return self.repo.get_easy_access_prompts()
 
     def _create_version(self, prompt_id: int, content: str, created_by: str) -> Version:
         """Create a version entry for a prompt."""

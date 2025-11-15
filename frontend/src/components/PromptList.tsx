@@ -27,6 +27,7 @@ interface PromptListProps {
   onEdit: (prompt: Prompt) => void;
   onDelete: (prompt: Prompt) => void;
   onEnhance: (prompt: Prompt) => void;
+  onToggleEasyAccess?: (prompt: Prompt, enable: boolean) => void;
   onReorderComplete?: () => void;
 }
 
@@ -43,6 +44,7 @@ export const PromptList = ({
   onEdit,
   onDelete,
   onEnhance,
+  onToggleEasyAccess,
   onReorderComplete,
 }: PromptListProps) => {
   const [items, setItems] = useState(prompts);
@@ -140,6 +142,7 @@ export const PromptList = ({
               onEdit={onEdit}
               onDelete={onDelete}
               onEnhance={onEnhance}
+              onToggleEasyAccess={onToggleEasyAccess}
             />
           ))}
         </SortableContext>

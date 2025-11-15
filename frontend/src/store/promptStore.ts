@@ -6,6 +6,7 @@ interface PromptState {
   // State
   prompts: Prompt[];
   selectedPrompt: Prompt | null;
+  easyAccessPrompts: Prompt[];
   total: number;
   limit: number;
   offset: number;
@@ -20,6 +21,8 @@ interface PromptState {
   deletePrompt: (id: number) => Promise<boolean>;
   movePrompt: (id: number, folderId: number) => Promise<Prompt | null>;
   duplicatePrompt: (id: number) => Promise<Prompt | null>;
+  toggleEasyAccess: (id: number, enable: boolean) => Promise<Prompt | null>;
+  loadEasyAccessPrompts: () => Promise<void>;
 
   // Helpers
   setSelectedPrompt: (prompt: Prompt | null) => void;
@@ -30,6 +33,7 @@ export const usePromptStore = create<PromptState>((set, get) => ({
   // Initial state
   prompts: [],
   selectedPrompt: null,
+  easyAccessPrompts: [],
   total: 0,
   limit: 50,
   offset: 0,
@@ -188,6 +192,50 @@ export const usePromptStore = create<PromptState>((set, get) => ({
     }
 
     return result.data || null;
+  },
+
+  // Toggle easy access status
+  toggleEasyAccess: async (id: number, enable: boolean) => {
+    set({ loading: true, error: null });
+
+    const result = await promptApi.toggleEasyAccess(id, enable);
+
+    if (result.error) {
+      set({ loading: false, error: result.error.message });
+      return null;
+    }
+
+    const updatedPrompt = result.data;
+    if (updatedPrompt) {
+      // Update the prompt in the list
+      set(state => ({
+        prompts: state.prompts.map(p =>
+          p.id === updatedPrompt.id ? updatedPrompt : p
+        ),
+        loading: false,
+      }));
+
+      // Reload easy access prompts
+      get().loadEasyAccessPrompts();
+    } else {
+      set({ loading: false });
+    }
+
+    return result.data || null;
+  },
+
+  // Load easy access prompts
+  loadEasyAccessPrompts: async () => {
+    const result = await promptApi.getEasyAccessPrompts();
+
+    if (result.error) {
+      console.error('Failed to load easy access prompts:', result.error);
+      return;
+    }
+
+    set({
+      easyAccessPrompts: result.data?.prompts || [],
+    });
   },
 
   // Set selected prompt

@@ -1,4 +1,4 @@
-import { Copy, Edit, Trash2, Sparkles, MoreVertical } from 'lucide-react';
+import { Copy, Edit, Trash2, Sparkles, MoreVertical, Star } from 'lucide-react';
 import type { Prompt } from '@/types/api';
 import './PromptListItem.css';
 
@@ -8,6 +8,7 @@ interface PromptListItemProps {
   onEdit: (prompt: Prompt) => void;
   onDelete: (prompt: Prompt) => void;
   onEnhance: (prompt: Prompt) => void;
+  onToggleEasyAccess?: (prompt: Prompt, enable: boolean) => void;
   isDragging?: boolean;
 }
 
@@ -23,6 +24,7 @@ export const PromptListItem = ({
   onEdit,
   onDelete,
   onEnhance,
+  onToggleEasyAccess,
   isDragging = false,
 }: PromptListItemProps) => {
   // Truncate content preview
@@ -61,6 +63,14 @@ export const PromptListItem = ({
 
       {/* Action Buttons */}
       <div className="prompt-actions">
+        <button
+          className={`action-btn easy-access-btn ${prompt.is_easy_access ? 'active' : ''}`}
+          onClick={() => onToggleEasyAccess?.(prompt, !prompt.is_easy_access)}
+          title={prompt.is_easy_access ? "Remove from Easy Access" : "Add to Easy Access"}
+          aria-label="Easy Access"
+        >
+          <Star size={16} fill={prompt.is_easy_access ? 'currentColor' : 'none'} />
+        </button>
         <button
           className="action-btn"
           onClick={() => onCopy(prompt)}

@@ -33,6 +33,7 @@ export interface Prompt {
   content: string;
   original_content: string | null;
   is_ai_enhanced: boolean;
+  is_easy_access: boolean;
   tags: string[];
   created_at: string;
   updated_at: string;

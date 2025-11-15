@@ -22,44 +22,94 @@ from pydantic import BaseModel
 router = APIRouter(prefix="/api/prompts", tags=["prompts"])
 
 
+def generate_snippet(content: str, query: str, max_length: int = 150) -> str:
+    """
+    Generate context snippet around matched query text.
+
+    Args:
+        content: Full content text
+        query: Search query to find
+        max_length: Maximum snippet length
+
+    Returns:
+        Context snippet with query match
+    """
+    if not content or not query:
+        return content[:max_length] + ("..." if len(content) > max_length else "")
+
+    query_lower = query.lower()
+    content_lower = content.lower()
+
+    # Find first match
+    pos = content_lower.find(query_lower)
+    if pos == -1:
+        # No match found, return start of content
+        return content[:max_length] + ("..." if len(content) > max_length else "")
+
+    # Extract context around match (50 chars before, 100 chars after query)
+    start = max(0, pos - 50)
+    end = min(len(content), pos + len(query) + 100)
+
+    snippet = content[start:end]
+
+    # Add ellipsis if truncated
+    if start > 0:
+        snippet = "..." + snippet
+    if end < len(content):
+        snippet = snippet + "..."
+
+    return snippet
+
+
 @router.get("/search", response_model=PromptListResponse)
 def search_prompts(
     q: str = Query(..., min_length=1, description="Search query"),
     folder_id: Optional[int] = Query(None, description="Filter by folder"),
     tags: Optional[List[str]] = Query(None, description="Filter by tags"),
+    created_after: Optional[str] = Query(None, description="Filter by created date (ISO: YYYY-MM-DD)"),
+    created_before: Optional[str] = Query(None, description="Filter by created date (ISO: YYYY-MM-DD)"),
     limit: int = Query(50, ge=1, le=10000),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db)
 ):
     """
-    Search prompts by query string.
+    Search prompts by query string with advanced filters.
 
     Args:
         q: Search query (searches title, description, content, tags)
         folder_id: Optional folder filter
         tags: Optional tag filters
+        created_after: Optional date filter (prompts created on or after this date)
+        created_before: Optional date filter (prompts created on or before this date)
         limit: Number of results (1-10000)
         offset: Pagination offset
         db: Database session
 
     Returns:
-        List of matching prompts with pagination info
+        List of matching prompts with pagination info and context snippets
     """
     service = PromptService(db)
-    prompts, total = service.search_prompts(q, folder_id, tags, limit, offset)
+    prompts, total = service.search_prompts(
+        q, folder_id, tags, created_after, created_before, limit, offset
+    )
 
-    # Convert tags string to list for each prompt
+    # Convert tags string to list and add snippet for each prompt
     prompts_data = []
     for prompt in prompts:
+        # Generate snippet showing matched context
+        snippet = generate_snippet(prompt.content, q)
+
         prompts_data.append({
             "id": prompt.id,
             "folder_id": prompt.folder_id,
             "title": prompt.title,
             "description": prompt.description,
             "content": prompt.content,
+            "snippet": snippet,  # Add context snippet
             "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
             "original_content": prompt.original_content,
             "is_ai_enhanced": prompt.is_ai_enhanced,
+            "is_easy_access": prompt.is_easy_access,
             "created_at": prompt.created_at,
             "updated_at": prompt.updated_at,
             "versions": []
@@ -107,6 +157,7 @@ def list_prompts(
             "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
             "original_content": prompt.original_content,
             "is_ai_enhanced": prompt.is_ai_enhanced,
+            "is_easy_access": prompt.is_easy_access,
             "created_at": prompt.created_at,
             "updated_at": prompt.updated_at,
             "versions": []  # Don't load versions in list view for performance
@@ -216,6 +267,46 @@ def apply_enhancement(
     return prompt
 
 
+@router.get("/easy-access/list", response_model=PromptListResponse)
+def list_easy_access_prompts(db: Session = Depends(get_db)):
+    """
+    Get all prompts marked as easy access.
+
+    Args:
+        db: Database session
+
+    Returns:
+        List of easy access prompts (max 8)
+    """
+    service = PromptService(db)
+    prompts = service.get_easy_access_prompts()
+
+    # Convert tags string to list for each prompt
+    prompts_data = []
+    for prompt in prompts:
+        prompts_data.append({
+            "id": prompt.id,
+            "folder_id": prompt.folder_id,
+            "title": prompt.title,
+            "description": prompt.description,
+            "content": prompt.content,
+            "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
+            "original_content": prompt.original_content,
+            "is_ai_enhanced": prompt.is_ai_enhanced,
+            "is_easy_access": prompt.is_easy_access,
+            "created_at": prompt.created_at,
+            "updated_at": prompt.updated_at,
+            "versions": []
+        })
+
+    return {
+        "prompts": prompts_data,
+        "total": len(prompts_data),
+        "limit": 8,
+        "offset": 0
+    }
+
+
 @router.get("/{prompt_id}", response_model=PromptResponse)
 def get_prompt(prompt_id: int, db: Session = Depends(get_db)):
     """
@@ -241,6 +332,7 @@ def get_prompt(prompt_id: int, db: Session = Depends(get_db)):
         "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
         "original_content": prompt.original_content,
         "is_ai_enhanced": prompt.is_ai_enhanced,
+        "is_easy_access": prompt.is_easy_access,
         "created_at": prompt.created_at,
         "updated_at": prompt.updated_at,
         "versions": prompt.versions
@@ -281,6 +373,7 @@ def create_prompt(prompt_data: PromptCreate, db: Session = Depends(get_db)):
         "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
         "original_content": prompt.original_content,
         "is_ai_enhanced": prompt.is_ai_enhanced,
+        "is_easy_access": prompt.is_easy_access,
         "created_at": prompt.created_at,
         "updated_at": prompt.updated_at,
         "versions": prompt.versions
@@ -421,6 +514,7 @@ def reorder_prompts(
                 "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
                 "original_content": prompt.original_content,
                 "is_ai_enhanced": prompt.is_ai_enhanced,
+                "is_easy_access": prompt.is_easy_access,
                 "created_at": prompt.created_at,
                 "updated_at": prompt.updated_at,
                 "versions": []
@@ -436,3 +530,50 @@ def reorder_prompts(
     except ValueError as e:
         from fastapi import HTTPException
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.patch("/{prompt_id}/easy-access", response_model=PromptResponse)
+def toggle_easy_access(
+    prompt_id: int,
+    enable: bool = Query(..., description="Enable or disable easy access"),
+    db: Session = Depends(get_db)
+):
+    """
+    Toggle easy access status for a prompt.
+
+    Maximum of 8 prompts can be marked as easy access. If limit is reached,
+    the request will fail with 400 error.
+
+    Args:
+        prompt_id: Prompt ID
+        enable: True to enable easy access, False to disable
+        db: Database session
+
+    Returns:
+        Updated prompt
+
+    Raises:
+        400: If trying to enable and already at 8-prompt limit
+        404: If prompt not found
+    """
+    service = PromptService(db)
+
+    # Get the prompt
+    prompt = service.get_prompt_by_id(prompt_id)
+
+    # If enabling, check the limit
+    if enable and not prompt.is_easy_access:
+        # Count current easy access prompts
+        easy_access_count = service.count_easy_access_prompts()
+        if easy_access_count >= 8:
+            from fastapi import HTTPException
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Maximum of 8 prompts can be marked as easy access. Please disable another prompt first."
+            )
+
+    # Update the flag
+    prompt.is_easy_access = enable
+    updated_prompt = service.repo.update(prompt)
+
+    return updated_prompt

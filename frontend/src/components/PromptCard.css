@@ -47,12 +47,7 @@
 .prompt-actions {
   display: flex;
   gap: 0.25rem;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.prompt-card:hover .prompt-actions {
-  opacity: 1;
+  /* Container always visible now since star is always rendered */
 }
 
 .action-button {
@@ -187,4 +182,26 @@
   border-radius: 12px;
   font-size: 0.7rem;
   font-weight: 500;
+}
+
+/* Easy Access Star Button - Always Visible */
+.action-button.easy-access {
+  opacity: 1 !important; /* Always show, even when not hovering */
+}
+
+.action-button.easy-access.active {
+  color: #fbbf24;
+  opacity: 1 !important;
+  font-size: 1.2rem;
+}
+
+.action-button.easy-access:not(.active) {
+  color: #d1d5db;
+  opacity: 0.4;
+}
+
+.action-button.easy-access:hover {
+  color: #fbbf24;
+  opacity: 1 !important;
+  transform: scale(1.15);
 }

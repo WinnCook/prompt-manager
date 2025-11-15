@@ -80,11 +80,15 @@
 .prompt-actions {
   display: flex;
   gap: 8px;
+}
+
+/* Hide non-star buttons by default, show all on hover */
+.action-btn:not(.easy-access-btn) {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
-.prompt-list-item:hover .prompt-actions {
+.prompt-list-item:hover .action-btn {
   opacity: 1;
 }
 
@@ -144,4 +148,29 @@
   .action-btn {
     padding: 6px;
   }
+}
+
+/* Easy Access Star Button - Always Visible */
+.action-btn.easy-access-btn {
+  opacity: 1 !important; /* Always show, even when not hovering */
+}
+
+.action-btn.easy-access-btn.active {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
+
+.action-btn.easy-access-btn:not(.active) {
+  color: #d1d5db;
+  border-color: var(--border-secondary);
+  opacity: 0.5;
+}
+
+.action-btn.easy-access-btn:hover {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: #fbbf24;
+  color: #fbbf24;
+  transform: scale(1.05);
+  opacity: 1 !important;
 }

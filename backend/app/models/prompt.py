@@ -76,6 +76,7 @@ class PromptResponse(BaseModel):
     tags: List[str] = []
     original_content: Optional[str]
     is_ai_enhanced: bool
+    is_easy_access: bool = False
     created_at: datetime
     updated_at: datetime
     versions: List[VersionResponse] = []

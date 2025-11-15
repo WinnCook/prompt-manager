@@ -155,6 +155,24 @@ export const promptApi = {
   async reorder(data: PromptReorder): Promise<ApiResponse<PromptListResponse>> {
     return api.post<PromptListResponse>('/api/prompts/reorder', data);
   },
+
+  /**
+   * Toggle easy access status for a prompt
+   * @param id - Prompt ID
+   * @param enable - True to enable, false to disable
+   * @returns Updated prompt
+   */
+  async toggleEasyAccess(id: number, enable: boolean): Promise<ApiResponse<Prompt>> {
+    return api.patch<Prompt>(`/api/prompts/${id}/easy-access?enable=${enable}`);
+  },
+
+  /**
+   * Get all prompts marked as easy access
+   * @returns List of easy access prompts (max 8)
+   */
+  async getEasyAccessPrompts(): Promise<ApiResponse<PromptListResponse>> {
+    return api.get<PromptListResponse>('/api/prompts/easy-access/list');
+  },
 };
 
 export default promptApi;

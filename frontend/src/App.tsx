@@ -11,7 +11,7 @@ import type { Prompt } from './types/api'
 function App() {
   // Zustand stores
   const { folders, loading, error, loadFolders, createFolder } = useFolderStore()
-  const { prompts, loadPrompts, duplicatePrompt, deletePrompt, movePrompt } = usePromptStore()
+  const { prompts, loadPrompts, duplicatePrompt, deletePrompt, movePrompt, toggleEasyAccess, loadEasyAccessPrompts } = usePromptStore()
   const { selectedFolderId, viewMode, openEditModal, showToast, sidebarWidth, theme, setTheme } = useUIStore()
 
   // Search state
@@ -74,10 +74,11 @@ function App() {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme]);
 
-  // Load folders on mount
+  // Load folders and easy access prompts on mount
   useEffect(() => {
     loadFolders()
-  }, [loadFolders])
+    loadEasyAccessPrompts()
+  }, [loadFolders, loadEasyAccessPrompts])
 
   // Load prompts when folder is selected
   useEffect(() => {
@@ -269,6 +270,25 @@ function App() {
     })
   }
 
+  // Easy Access handler
+  const handleToggleEasyAccess = async (prompt: Prompt, enable: boolean) => {
+    console.log('[Easy Access] Toggling:', prompt.id, enable)
+    const result = await toggleEasyAccess(prompt.id, enable)
+    console.log('[Easy Access] Result:', result)
+    if (result) {
+      showToast(
+        enable ? 'Added to Easy Access' : 'Removed from Easy Access',
+        'success'
+      )
+      // Reload prompts to reflect the change
+      if (selectedFolderId !== null) {
+        loadPrompts({ folder_id: selectedFolderId })
+      }
+    } else {
+      showToast('Failed to update Easy Access (max 8 allowed)', 'error')
+    }
+  }
+
   // Search handler
   const handleSearch = async (query: string) => {
     console.log('[Search] Query:', query);
@@ -397,6 +417,7 @@ function App() {
                   onDuplicate={handleDuplicate}
                   onDelete={handleDelete}
                   onEnhance={handleEnhance}
+                  onToggleEasyAccess={handleToggleEasyAccess}
                 />
               ) : (
                 <PromptList
@@ -406,6 +427,7 @@ function App() {
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   onEnhance={handleEnhance}
+                  onToggleEasyAccess={handleToggleEasyAccess}
                   onReorderComplete={() => {
                     if (selectedFolderId !== null) {
                       loadPrompts({ folder_id: selectedFolderId });

@@ -140,22 +140,28 @@ class PromptRepository:
         query: str,
         folder_id: Optional[int] = None,
         tags: Optional[List[str]] = None,
+        created_after: Optional[str] = None,
+        created_before: Optional[str] = None,
         limit: int = 50,
         offset: int = 0
     ) -> tuple[List[Prompt], int]:
         """
-        Search prompts by query string.
+        Search prompts by query string with optional filters.
 
         Args:
             query: Search query (searches title, description, content, tags)
             folder_id: Optional folder filter
             tags: Optional tag filters
+            created_after: Optional date filter (ISO format: YYYY-MM-DD)
+            created_before: Optional date filter (ISO format: YYYY-MM-DD)
             limit: Number of results
             offset: Pagination offset
 
         Returns:
             Tuple of (prompts list, total count)
         """
+        from datetime import datetime
+
         db_query = self.db.query(Prompt)
 
         # Search across title, description, content, and tags
@@ -177,7 +183,46 @@ class PromptRepository:
             for tag in tags:
                 db_query = db_query.filter(Prompt.tags.ilike(f"%{tag}%"))
 
+        # Filter by created_after date
+        if created_after:
+            try:
+                after_date = datetime.fromisoformat(created_after)
+                db_query = db_query.filter(Prompt.created_at >= after_date)
+            except ValueError:
+                pass  # Ignore invalid date format
+
+        # Filter by created_before date
+        if created_before:
+            try:
+                before_date = datetime.fromisoformat(created_before)
+                # Add one day to include the entire before_date day
+                from datetime import timedelta
+                before_date = before_date + timedelta(days=1)
+                db_query = db_query.filter(Prompt.created_at < before_date)
+            except ValueError:
+                pass  # Ignore invalid date format
+
         total = db_query.count()
         prompts = db_query.order_by(desc(Prompt.updated_at)).offset(offset).limit(limit).all()
 
         return prompts, total
+
+    def count_easy_access(self) -> int:
+        """
+        Count the number of prompts marked as easy access.
+
+        Returns:
+            Count of easy access prompts
+        """
+        return self.db.query(Prompt).filter(Prompt.is_easy_access == True).count()
+
+    def get_easy_access_prompts(self) -> List[Prompt]:
+        """
+        Get all prompts marked as easy access.
+
+        Returns:
+            List of easy access prompts ordered by title (max 8)
+        """
+        return self.db.query(Prompt).filter(
+            Prompt.is_easy_access == True
+        ).order_by(Prompt.title.asc()).limit(8).all()
