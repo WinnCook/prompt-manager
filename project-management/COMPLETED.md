@@ -2,7 +2,104 @@
 
 This document tracks all completed tasks across all sprints with notes, decisions made, and any follow-up items needed.
 
-**Last Updated**: November 14, 2025
+**Last Updated**: November 15, 2025
+
+---
+
+## Hot Fix: Launcher Streamlining (November 15, 2025) ✅
+
+**Duration**: ~1 hour
+**Type**: UX Improvement / Hot Fix
+**Status**: ✅ COMPLETED
+
+### Problem
+User reported three major issues with the desktop launcher:
+1. Three terminal windows popping up on launch
+2. Electron error messages appearing
+3. Unable to pin shortcut to Windows taskbar ("jank city icon")
+
+### Solution Implemented
+
+#### Created Silent VBS Launcher
+- **File**: `launch-silent.vbs`
+- Runs both backend and frontend servers completely hidden (no terminal windows)
+- Uses `WScript.Shell.Run` with window style `0` for invisible execution
+- Starts backend: `.venv\Scripts\python.exe -m app.main`
+- Starts frontend: `npm run dev:react` (skips Electron!)
+- Opens Chrome in app mode with `--app=` flag
+- Falls back to default browser if Chrome not installed
+
+#### Fixed Electron Error
+- **Root Cause**: `package.json:7` defined `dev` script as `concurrently "npm run dev:react" "npm run dev:electron"`
+- **Solution**: Changed launcher to use `npm run dev:react` instead of `npm run dev`
+- **Result**: No more Electron startup or error messages
+
+#### Made Shortcut Pinnable to Taskbar
+- **File**: `create-desktop-shortcut.ps1`
+- Changed shortcut target from `.bat` file to `wscript.exe` running VBS script
+- Updated icon from folder icon (#13) to modern app icon (#165)
+- Windows now recognizes it as a proper application shortcut
+- Can be pinned to taskbar successfully
+
+#### Updated BAT Launcher
+- **File**: `start-prompt-manager.bat`
+- Also changed to use `npm run dev:react` for consistency
+- Users who prefer `.bat` files also get Electron-free experience
+
+### Technical Decisions
+
+**VBScript vs PowerShell for Silent Launcher**:
+- Chose VBScript for more reliable window hiding
+- PowerShell `-WindowStyle Hidden` can still flash windows briefly
+- No PowerShell execution policy issues with VBScript
+
+**Chrome App Mode**:
+- Using `--app=http://localhost:5173` for native app-like experience
+- No browser chrome (address bar, tabs, etc.)
+- Falls back gracefully if Chrome not installed
+
+### Results
+
+**Before**:
+- ❌ 3 visible terminal windows
+- ❌ Electron error messages
+- ❌ Cannot pin to taskbar
+- ❌ Generic folder icon
+
+**After**:
+- ✅ Zero visible terminal windows (fully silent)
+- ✅ No Electron errors
+- ✅ Pinnable to Windows taskbar
+- ✅ Modern app icon
+- ✅ Opens directly in Chrome app mode
+
+### User Feedback
+**Quote**: "dude nice work!"
+**Result**: Immediate approval and high satisfaction
+
+### Files Changed
+**Created**:
+- `launch-silent.vbs` - Silent launcher script
+- `project-management/LAUNCHER_STREAMLINE_FIX.md` - Detailed documentation
+
+**Modified**:
+- `create-desktop-shortcut.ps1` - Pinnable shortcut creation
+- `start-prompt-manager.bat` - Fixed Electron error
+- `README.md` - Updated documentation
+
+### Key Learnings
+1. Check `package.json` scripts when debugging startup issues
+2. VBScript's `Run` with window style `0` is most reliable for hiding windows
+3. Windows shortcut target determines taskbar pinning behavior
+4. Small UX improvements can dramatically increase user satisfaction
+
+### Metrics
+- Development Time: ~1 hour
+- User Satisfaction: High
+- Bugs Found: 0
+- Technical Debt Resolved: 1 (taskbar pinning)
+
+**Documentation**: See `project-management/LAUNCHER_STREAMLINE_FIX.md` for complete details.
 
 ---
 

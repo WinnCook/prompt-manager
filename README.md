@@ -24,6 +24,7 @@ Prompt Manager is a productivity tool designed to help users organize their prom
 - **Cascade Delete**: Safely delete folders with automatic cleanup of children and prompts
 
 ### UI Features
+- **Voice-to-Text Input**: Microphone button on all text fields for hands-free input with visual feedback
 - **Dark Mode**: Toggle between light, dark, and system themes with smooth transitions and persistent preference
 - **Resizable Sidebar**: Drag the divider to adjust sidebar width from 200px to 600px, with width persisting across sessions
 - **Intuitive Interface**: Left navigation panel, right content area with hover actions
@@ -90,7 +91,12 @@ prompt-manager/
 │   │   │   ├── NewFolderButton.tsx
 │   │   │   ├── PromptEditor.tsx
 │   │   │   ├── PromptList.tsx
-│   │   │   └── SearchBar.tsx
+│   │   │   ├── SearchBar.tsx
+│   │   │   ├── VoiceInputButton.tsx       # Voice input microphone button
+│   │   │   ├── TextInputWithVoice.tsx     # Input wrapper with voice support
+│   │   │   └── TextAreaWithVoice.tsx      # Textarea wrapper with voice support
+│   │   ├── hooks/            # Custom React hooks
+│   │   │   └── useVoiceInput.ts           # Web Speech API integration
 │   │   ├── pages/
 │   │   │   └── Home.tsx      # Main application page
 │   │   ├── services/         # API client services
@@ -159,20 +165,28 @@ prompt-manager/
 
 The application automatically initializes the database with a Root folder. All your prompts and folders will be organized within this root structure.
 
-### Desktop Shortcut (Quick Launch)
+### Desktop Shortcut (Quick Launch) - Streamlined!
 
-A desktop shortcut has been created for easy access. Simply double-click **"Prompt Manager"** on your desktop to:
-- Start the backend server automatically
-- Start the frontend development server
-- Open the application in your default browser
+A desktop shortcut has been created for **silent, popup-free launching**. Simply double-click **"Prompt Manager"** on your desktop to:
+- Start both backend and frontend servers **silently** (no terminal windows!)
+- Open the application directly in Chrome (or default browser)
+- No Electron errors or popups
 
-The shortcut runs `start-prompt-manager.bat` which handles everything for you!
+**Features:**
+- ✅ Zero terminal windows
+- ✅ No Electron error messages
+- ✅ Pinnable to Windows taskbar
+- ✅ Opens directly in Chrome app mode
 
-**To recreate the shortcut:**
+**To create/recreate the shortcut:**
 ```bash
 cd prompt-manager
 powershell -ExecutionPolicy Bypass -File create-desktop-shortcut.ps1
 ```
+
+**To pin to taskbar:**
+1. Right-click the "Prompt Manager" desktop shortcut
+2. Select "Pin to taskbar"
 
 ## Development Workflow
 
@@ -294,6 +308,21 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 - Run manual migrations for schema changes
 
 ## Recent Updates
+
+### Voice-to-Text Feature (November 14, 2025) ✅
+- **Universal Voice Input**: Added microphone button to all text input fields
+- **Web Speech API Integration**: Browser-native speech recognition with continuous listening
+- **Visual Feedback**: Animated red pulse indicator during recording
+- **Smart Appending**: Voice text appends to existing input without replacing
+- **Components Added**:
+  - `useVoiceInput` custom hook for speech recognition logic
+  - `VoiceInputButton` reusable microphone button component
+  - `TextInputWithVoice` wrapper for input fields
+  - `TextAreaWithVoice` wrapper for textarea fields
+- **Coverage**: SearchBar, EditModal (title/description/content/tags), CommandPalette, VariableFillDialog, NewFolderButton
+- **Browser Support**: Chrome, Edge, Safari (WebKit-based browsers)
+- **Dark Mode Compatible**: Fully styled for both light and dark themes
+- **Graceful Degradation**: Button hidden in unsupported browsers
 
 ### Sprint 5: Dark Mode Theme (November 14-15, 2025) ✅
 - **Complete Dark Mode**: Implemented full dark theme with CSS variable system

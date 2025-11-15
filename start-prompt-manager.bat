@@ -12,9 +12,9 @@ start "Prompt Manager - Backend" cmd /k "cd /d "%SCRIPT_DIR%backend" && ".venv\S
 REM Wait a moment for backend to initialize
 timeout /t 3 /nobreak >nul
 
-REM Start Frontend Server
+REM Start Frontend Server (React only - no Electron)
 echo Starting Frontend Server...
-start "Prompt Manager - Frontend" cmd /k "cd /d "%SCRIPT_DIR%frontend" && npm run dev"
+start "Prompt Manager - Frontend" cmd /k "cd /d "%SCRIPT_DIR%frontend" && npm run dev:react"
 
 REM Wait for frontend to start
 timeout /t 5 /nobreak >nul
