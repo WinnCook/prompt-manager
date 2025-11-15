@@ -360,6 +360,12 @@ function App() {
     },
   ])
 
+  const handleOpenWidget = () => {
+    const widgetPath = 'easy-access-widget.html'
+    const widgetUrl = `${window.location.protocol}//${window.location.host}/${widgetPath}`
+    window.open(widgetUrl, 'QuickAccessWidget', 'width=400,height=600,resizable=yes,scrollbars=yes')
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -367,6 +373,20 @@ function App() {
           <h1>Prompt Manager</h1>
           <div className="header-actions">
             <SearchBar onSearch={handleSearch} />
+            <button
+              className="btn-secondary"
+              onClick={handleOpenWidget}
+              title="Open Quick Access Widget in pop-out window"
+              style={{
+                padding: '8px 12px',
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              ⚡ Pop-out
+            </button>
             <ThemeToggle />
           </div>
         </div>

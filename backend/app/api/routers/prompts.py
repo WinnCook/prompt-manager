@@ -14,6 +14,7 @@ from app.models.prompt import (
     PromptMove,
     PromptDuplicate,
     PromptReorder,
+    EasyAccessReorder,
     PromptResponse,
     PromptListResponse
 )
@@ -280,6 +281,61 @@ def list_easy_access_prompts(db: Session = Depends(get_db)):
     """
     service = PromptService(db)
     prompts = service.get_easy_access_prompts()
+
+    # Convert tags string to list for each prompt
+    prompts_data = []
+    for prompt in prompts:
+        prompts_data.append({
+            "id": prompt.id,
+            "folder_id": prompt.folder_id,
+            "title": prompt.title,
+            "description": prompt.description,
+            "content": prompt.content,
+            "tags": [t.strip() for t in prompt.tags.split(',') if t.strip()] if prompt.tags else [],
+            "original_content": prompt.original_content,
+            "is_ai_enhanced": prompt.is_ai_enhanced,
+            "is_easy_access": prompt.is_easy_access,
+            "created_at": prompt.created_at,
+            "updated_at": prompt.updated_at,
+            "versions": []
+        })
+
+    return {
+        "prompts": prompts_data,
+        "total": len(prompts_data),
+        "limit": 8,
+        "offset": 0
+    }
+
+
+@router.post("/easy-access/reorder", response_model=PromptListResponse)
+def reorder_easy_access_prompts(
+    reorder_data: EasyAccessReorder,
+    db: Session = Depends(get_db)
+):
+    """
+    Reorder easy access prompts.
+
+    Moves the specified easy access prompt to a new position and adjusts
+    other easy access prompts accordingly. All prompts will have their
+    easy_access_order updated.
+
+    Args:
+        reorder_data: Reorder operation data (prompt_id, new_position)
+        db: Database session
+
+    Returns:
+        List of all easy access prompts with updated easy_access_order
+
+    Raises:
+        404: If prompt not found
+        400: If prompt is not marked as easy access
+    """
+    service = PromptService(db)
+    prompts = service.reorder_easy_access_prompts(
+        reorder_data.prompt_id,
+        reorder_data.new_position
+    )
 
     # Convert tags string to list for each prompt
     prompts_data = []

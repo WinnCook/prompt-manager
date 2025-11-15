@@ -384,6 +384,67 @@ class PromptService:
         """
         return self.repo.get_easy_access_prompts()
 
+    def reorder_easy_access_prompts(self, prompt_id: int, new_position: int) -> List[Prompt]:
+        """
+        Reorder easy access prompts.
+
+        Moves the specified easy access prompt to the new position and adjusts
+        other easy access prompts accordingly.
+
+        Args:
+            prompt_id: ID of the prompt to reorder
+            new_position: New position (0-based index) in the easy access list
+
+        Returns:
+            List of all easy access prompts with updated easy_access_order
+
+        Raises:
+            PromptNotFoundException: If prompt not found
+            ValueError: If prompt is not marked as easy access
+        """
+        # Validate prompt exists and is easy access
+        prompt = self.repo.get_by_id(prompt_id)
+        if not prompt:
+            raise PromptNotFoundException(prompt_id)
+
+        if not prompt.is_easy_access:
+            raise ValueError(f"Prompt {prompt_id} is not marked as easy access")
+
+        # Get all easy access prompts ordered by current easy_access_order
+        all_prompts = self.repo.get_easy_access_prompts()
+
+        if not all_prompts:
+            return []
+
+        # Validate new_position is within bounds
+        if new_position < 0 or new_position >= len(all_prompts):
+            new_position = max(0, min(new_position, len(all_prompts) - 1))
+
+        # Find current position of the prompt
+        current_position = None
+        for i, p in enumerate(all_prompts):
+            if p.id == prompt_id:
+                current_position = i
+                break
+
+        if current_position is None:
+            # Prompt not in list, shouldn't happen but handle it
+            current_position = len(all_prompts)
+
+        # Reorder the list
+        if current_position != new_position:
+            # Remove prompt from current position
+            prompt_to_move = all_prompts.pop(current_position)
+            # Insert at new position
+            all_prompts.insert(new_position, prompt_to_move)
+
+        # Update easy_access_order for all prompts
+        for i, p in enumerate(all_prompts):
+            p.easy_access_order = i + 1  # 1-based ordering
+            self.repo.update(p)
+
+        return all_prompts
+
     def _create_version(self, prompt_id: int, content: str, created_by: str) -> Version:
         """Create a version entry for a prompt."""
         version_number = self.repo.get_version_count(prompt_id) + 1

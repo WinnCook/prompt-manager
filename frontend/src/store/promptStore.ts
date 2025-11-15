@@ -26,6 +26,7 @@ interface PromptState {
 
   // Helpers
   setSelectedPrompt: (prompt: Prompt | null) => void;
+  setEasyAccessPrompts: (prompts: Prompt[]) => void;
   clearError: () => void;
 }
 
@@ -241,6 +242,11 @@ export const usePromptStore = create<PromptState>((set, get) => ({
   // Set selected prompt
   setSelectedPrompt: (prompt: Prompt | null) => {
     set({ selectedPrompt: prompt });
+  },
+
+  // Set easy access prompts
+  setEasyAccessPrompts: (prompts: Prompt[]) => {
+    set({ easyAccessPrompts: prompts });
   },
 
   // Clear error

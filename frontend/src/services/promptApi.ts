@@ -173,6 +173,19 @@ export const promptApi = {
   async getEasyAccessPrompts(): Promise<ApiResponse<PromptListResponse>> {
     return api.get<PromptListResponse>('/api/prompts/easy-access/list');
   },
+
+  /**
+   * Reorder easy access prompts
+   * @param promptId - ID of the prompt to reorder
+   * @param newPosition - New position (0-based index)
+   * @returns Updated list of easy access prompts
+   */
+  async reorderEasyAccess(promptId: number, newPosition: number): Promise<ApiResponse<PromptListResponse>> {
+    return api.post<PromptListResponse>('/api/prompts/easy-access/reorder', {
+      prompt_id: promptId,
+      new_position: newPosition,
+    });
+  },
 };
 
 export default promptApi;

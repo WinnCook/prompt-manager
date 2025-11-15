@@ -221,8 +221,11 @@ class PromptRepository:
         Get all prompts marked as easy access.
 
         Returns:
-            List of easy access prompts ordered by title (max 8)
+            List of easy access prompts ordered by easy_access_order, then title (max 8)
         """
         return self.db.query(Prompt).filter(
             Prompt.is_easy_access == True
-        ).order_by(Prompt.title.asc()).limit(8).all()
+        ).order_by(
+            Prompt.easy_access_order.asc().nulls_last(),
+            Prompt.title.asc()
+        ).limit(8).all()
