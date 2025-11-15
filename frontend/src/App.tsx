@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import { useFolderStore, usePromptStore, useUIStore } from './store'
-import { FolderTree, PromptGrid, PromptList, EditModal, NewFolderButton, DeleteFolderButton, SearchBar, SearchResults, CommandPalette, ShortcutsHelp, VariableFillDialog, ViewToggle, ResizableDivider } from './components'
+import { FolderTree, PromptGrid, PromptList, EditModal, NewFolderButton, DeleteFolderButton, SearchBar, SearchResults, CommandPalette, ShortcutsHelp, VariableFillDialog, ViewToggle, ResizableDivider, ThemeToggle } from './components'
 import { EnhanceCompareModal } from './components/EnhanceCompareModal'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { promptApi } from './services'
@@ -12,7 +12,7 @@ function App() {
   // Zustand stores
   const { folders, loading, error, loadFolders, createFolder } = useFolderStore()
   const { prompts, loadPrompts, duplicatePrompt, deletePrompt, movePrompt } = usePromptStore()
-  const { selectedFolderId, viewMode, openEditModal, showToast, sidebarWidth } = useUIStore()
+  const { selectedFolderId, viewMode, openEditModal, showToast, sidebarWidth, theme, setTheme } = useUIStore()
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -52,6 +52,27 @@ function App() {
     enhanced: '',
     customInstruction: '',
   })
+
+  // Initialize theme on mount
+  useEffect(() => {
+    // Apply theme to DOM
+    const effectiveTheme = theme === 'system'
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      : theme;
+    document.documentElement.setAttribute('data-theme', effectiveTheme);
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (theme === 'system') {
+        const newTheme = e.matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [theme]);
 
   // Load folders on mount
   useEffect(() => {
@@ -324,7 +345,10 @@ function App() {
       <header className="app-header">
         <div className="header-content">
           <h1>Prompt Manager</h1>
-          <SearchBar onSearch={handleSearch} />
+          <div className="header-actions">
+            <SearchBar onSearch={handleSearch} />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
       <main className="app-main">

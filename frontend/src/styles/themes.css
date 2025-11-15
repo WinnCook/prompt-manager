@@ -1,0 +1,195 @@
+/**
+ * Theme System - CSS Variables for Light and Dark Modes
+ *
+ * Usage:
+ * - Light theme is the default (:root)
+ * - Dark theme is applied when [data-theme="dark"] is set on <html>
+ * - All colors should use these variables for theme consistency
+ */
+
+/* ============================================
+   LIGHT THEME (Default)
+   ============================================ */
+:root {
+  /* Backgrounds */
+  --bg-primary: #ffffff;
+  --bg-secondary: #ecf0f1;
+  --bg-tertiary: #dfe4e6;
+  --bg-hover: #f8f9fa;
+  --bg-active: #e9ecef;
+
+  /* Text Colors */
+  --text-primary: #2c3e50;
+  --text-secondary: #34495e;
+  --text-muted: #7f8c8d;
+  --text-inverse: #ffffff;
+  --text-on-accent: #1e1e1e; /* Dark text on light blue accent background */
+
+  /* Border Colors */
+  --border-primary: #bdc3c7;
+  --border-secondary: #ecf0f1;
+  --border-hover: #95a5a6;
+
+  /* Accent Colors */
+  --accent-primary: #2196f3;
+  --accent-primary-hover: #1976d2;
+  --accent-primary-active: #0d47a1;
+
+  --accent-success: #27ae60;
+  --accent-success-hover: #229954;
+
+  --accent-warning: #f39c12;
+  --accent-warning-hover: #d68910;
+
+  --accent-danger: #e74c3c;
+  --accent-danger-hover: #c0392b;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+
+  /* Modal Overlay */
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+
+  /* Input Fields */
+  --input-bg: #ffffff;
+  --input-border: #bdc3c7;
+  --input-border-focus: #2196f3;
+  --input-text: #2c3e50;
+  --input-placeholder: #95a5a6;
+
+  /* Code Blocks */
+  --code-bg: #f8f9fa;
+  --code-text: #c7254e;
+  --code-border: #e1e8ed;
+
+  /* Scrollbar */
+  --scrollbar-track: #ecf0f1;
+  --scrollbar-thumb: #bdc3c7;
+  --scrollbar-thumb-hover: #95a5a6;
+}
+
+/* ============================================
+   DARK THEME
+   ============================================ */
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #3a3a3a;
+  --bg-hover: #323232;
+  --bg-active: #3f3f3f;
+
+  /* Text Colors */
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-muted: #808080;
+  --text-inverse: #1e1e1e;
+  --text-on-accent: #1e1e1e; /* Dark text on light blue accent background in dark mode */
+
+  /* Border Colors */
+  --border-primary: #404040;
+  --border-secondary: #333333;
+  --border-hover: #555555;
+
+  /* Accent Colors */
+  --accent-primary: #4a9eff;
+  --accent-primary-hover: #3d8ceb;
+  --accent-primary-active: #2d7ad9;
+
+  --accent-success: #4caf50;
+  --accent-success-hover: #45a049;
+
+  --accent-warning: #ff9800;
+  --accent-warning-hover: #fb8c00;
+
+  --accent-danger: #f44336;
+  --accent-danger-hover: #e53935;
+
+  /* Shadows (darker and more prominent in dark mode) */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5), 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.5), 0 10px 10px rgba(0, 0, 0, 0.3);
+
+  /* Modal Overlay (lighter in dark mode for better visibility) */
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+
+  /* Input Fields */
+  --input-bg: #2d2d2d;
+  --input-border: #404040;
+  --input-border-focus: #4a9eff;
+  --input-text: #e0e0e0;
+  --input-placeholder: #808080;
+
+  /* Code Blocks */
+  --code-bg: #2d2d2d;
+  --code-text: #ff79c6;
+  --code-border: #404040;
+
+  /* Scrollbar */
+  --scrollbar-track: #2d2d2d;
+  --scrollbar-thumb: #404040;
+  --scrollbar-thumb-hover: #555555;
+}
+
+/* ============================================
+   THEME TRANSITIONS
+   ============================================ */
+
+/* Smooth transitions when switching themes */
+:root,
+[data-theme="dark"] {
+  transition-property: background-color, color, border-color;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* Apply transitions to all themeable elements */
+* {
+  transition-property: background-color, color, border-color, box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* Preserve fast transitions for interactive elements */
+button,
+input,
+textarea,
+select,
+a {
+  transition-property: background-color, color, border-color, box-shadow, transform, opacity;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR STYLING
+   ============================================ */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}

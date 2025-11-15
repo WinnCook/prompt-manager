@@ -19,29 +19,34 @@
 }
 
 .folder-item:hover {
-  background-color: #f5f5f5;
+  background-color: var(--bg-hover);
 }
 
 .folder-item.selected {
-  background-color: #e3f2fd;
+  background-color: var(--accent-primary);
+  color: var(--text-on-accent);
   font-weight: 500;
 }
 
 .folder-item.selected:hover {
-  background-color: #bbdefb;
+  background-color: var(--accent-primary-hover);
+  color: var(--text-on-accent);
 }
 
 .folder-item.selected.expanded {
-  background-color: #bbdefb;
+  background-color: var(--accent-primary-hover);
+  color: var(--text-on-accent);
 }
 
 .folder-item.selected.expanded:hover {
-  background-color: #90caf9;
+  background-color: var(--accent-primary-active);
+  color: var(--text-on-accent);
 }
 
 .folder-item.drag-over {
-  background-color: #c8e6c9;
-  border: 2px dashed #4caf50;
+  background-color: var(--accent-success);
+  opacity: 0.2;
+  border: 2px dashed var(--accent-success);
 }
 
 .expand-button {
@@ -51,7 +56,7 @@
   margin-right: 0.5rem;
   cursor: pointer;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-muted);
   width: 1rem;
   height: 1rem;
   display: flex;
@@ -61,7 +66,7 @@
 }
 
 .expand-button:hover {
-  color: #333;
+  color: var(--text-primary);
 }
 
 .folder-icon {
@@ -81,15 +86,17 @@
   flex: 1;
   font-size: 0.875rem;
   padding: 0.25rem 0.5rem;
-  border: 1px solid #2196f3;
+  border: 1px solid var(--input-border-focus);
   border-radius: 3px;
   outline: none;
-  background-color: white;
+  background-color: var(--input-bg);
+  color: var(--input-text);
   font-family: inherit;
 }
 
 .folder-name-input:focus {
-  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+  box-shadow: 0 0 0 2px var(--accent-primary);
+  opacity: 0.2;
 }
 
 .folder-actions {
@@ -112,11 +119,11 @@
 
 .folder-action-btn:hover {
   opacity: 1;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--bg-hover);
 }
 
 .folder-action-btn:active {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-active);
 }
 
 .folder-children {

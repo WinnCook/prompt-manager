@@ -24,6 +24,7 @@ Prompt Manager is a productivity tool designed to help users organize their prom
 - **Cascade Delete**: Safely delete folders with automatic cleanup of children and prompts
 
 ### UI Features
+- **Dark Mode**: Toggle between light, dark, and system themes with smooth transitions and persistent preference
 - **Resizable Sidebar**: Drag the divider to adjust sidebar width from 200px to 600px, with width persisting across sessions
 - **Intuitive Interface**: Left navigation panel, right content area with hover actions
 - **Multiple Views**: Toggle between grid and list view with persistent preference
@@ -293,6 +294,16 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 - Run manual migrations for schema changes
 
 ## Recent Updates
+
+### Sprint 5: Dark Mode Theme (November 14-15, 2025) ✅
+- **Complete Dark Mode**: Implemented full dark theme with CSS variable system
+- **Theme Toggle**: Added toggle button with Light/Dark/System auto-detection modes
+- **Smooth Transitions**: 0.3s ease transitions when switching themes
+- **Persistent Preference**: Theme choice saved to localStorage
+- **System Detection**: Automatically detects and follows OS theme preference
+- **17 Components Converted**: All UI components support both themes with 142+ color replacements
+- **Accessibility Fix**: Resolved selected folder text readability in dark mode
+- 13/13 story points completed (100%)
 
 ### Sprint 4 UI Enhancement (November 14, 2025) ✅
 - **AI Button Sizing**: Doubled AI enhance button size in grid mode (36px → 72px) for improved aesthetics and better visual balance

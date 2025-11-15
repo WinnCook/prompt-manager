@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 type ViewMode = 'grid' | 'list';
+type Theme = 'light' | 'dark' | 'system';
 
 // Sidebar width constraints
 const MIN_SIDEBAR_WIDTH = 200;
@@ -31,6 +32,11 @@ interface UIState {
   // Search
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+
+  // Theme
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  getEffectiveTheme: () => 'light' | 'dark';
 
   // Toast notifications
   toast: {
@@ -80,6 +86,25 @@ export const useUIStore = create<UIState>()(
       searchQuery: '',
       setSearchQuery: (query) => set({ searchQuery: query }),
 
+      // Theme
+      theme: 'system',
+      setTheme: (theme) => {
+        set({ theme });
+        // Apply theme to DOM
+        const effectiveTheme = theme === 'system'
+          ? window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          : theme;
+        document.documentElement.setAttribute('data-theme', effectiveTheme);
+      },
+      getEffectiveTheme: () => {
+        const state = (useUIStore.getState) as () => UIState;
+        const currentState = state();
+        if (currentState.theme === 'system') {
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        return currentState.theme;
+      },
+
       // Toast
       toast: {
         message: '',
@@ -100,6 +125,7 @@ export const useUIStore = create<UIState>()(
         sidebarWidth: state.sidebarWidth,
         selectedFolderId: state.selectedFolderId,
         viewMode: state.viewMode,
+        theme: state.theme,
       }),
     }
   )

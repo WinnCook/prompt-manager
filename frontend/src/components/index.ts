@@ -15,3 +15,4 @@ export { ShortcutsHelp } from './ShortcutsHelp';
 export { VariableFillDialog } from './VariableFillDialog';
 export { ViewToggle } from './ViewToggle';
 export { ResizableDivider } from './ResizableDivider';
+export { ThemeToggle } from './ThemeToggle';

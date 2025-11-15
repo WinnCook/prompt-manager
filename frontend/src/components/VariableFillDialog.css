@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--overlay-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,9 +13,9 @@
 }
 
 .variable-fill-dialog {
-  background-color: white;
+  background-color: var(--bg-primary);
   border-radius: 8px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
@@ -27,19 +27,19 @@
 .variable-fill-header {
   position: relative;
   padding: 1.5rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .variable-fill-header h2 {
   margin: 0 0 0.5rem 0;
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .variable-fill-subtitle {
   margin: 0;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
@@ -57,16 +57,18 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .variable-sets-section select {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border);
   border-radius: 4px;
   font-size: 0.875rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
 }
 
 .variable-inputs {
@@ -79,13 +81,13 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .default-indicator {
   font-weight: 400;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   margin-left: 0.5rem;
 }
@@ -93,14 +95,16 @@
 .variable-input-group input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border);
   border-radius: 4px;
   font-size: 0.875rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
 }
 
 .variable-input-group input:focus {
   outline: none;
-  border-color: #2196f3;
+  border-color: var(--accent-primary);
   box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
 
@@ -108,7 +112,7 @@
   margin-top: 1rem;
   padding: 1rem;
   background-color: #ffebee;
-  border-left: 3px solid #f44336;
+  border-left: 3px solid var(--accent-danger);
   border-radius: 4px;
 }
 
@@ -131,7 +135,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   cursor: pointer;
 }
 
@@ -142,39 +146,40 @@
 .variable-preview {
   margin-top: 1rem;
   padding: 1rem;
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
   border-radius: 4px;
 }
 
 .variable-preview h3 {
   margin: 0 0 0.5rem 0;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .variable-preview pre {
   margin: 0;
   padding: 1rem;
-  background-color: white;
-  border: 1px solid #e0e0e0;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-primary);
   border-radius: 4px;
   font-size: 0.875rem;
   line-height: 1.5;
   white-space: pre-wrap;
   word-wrap: break-word;
+  color: var(--code-text);
 }
 
 .save-set-section {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-primary);
 }
 
 .save-set-section label {
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -186,9 +191,11 @@
 .save-set-input input {
   flex: 1;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border);
   border-radius: 4px;
   font-size: 0.875rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
 }
 
 .variable-fill-footer {
@@ -196,15 +203,15 @@
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid #e0e0e0;
-  background-color: #f9f9f9;
+  border-top: 1px solid var(--border-primary);
+  background-color: var(--bg-secondary);
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
 
 .btn-secondary {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: var(--bg-active);
+  color: var(--text-primary);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -215,5 +222,5 @@
 }
 
 .btn-secondary:hover {
-  background-color: #d0d0d0;
+  background-color: #c0c0c0;
 }

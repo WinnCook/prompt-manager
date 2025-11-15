@@ -1,6 +1,6 @@
 .resizable-divider {
   width: 4px;
-  background-color: #bdc3c7;
+  background-color: var(--border-primary);
   cursor: col-resize;
   transition: background-color 0.2s ease;
   user-select: none;
@@ -9,11 +9,11 @@
 }
 
 .resizable-divider:hover {
-  background-color: #95a5a6;
+  background-color: var(--border-hover);
 }
 
 .resizable-divider.dragging {
-  background-color: #2196f3;
+  background-color: var(--accent-primary);
 }
 
 .resizable-divider::before {

@@ -9,18 +9,18 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border-primary);
 }
 
 .search-results-header h3 {
   margin: 0;
   font-size: 1.25rem;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .results-count {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -32,15 +32,15 @@
 
 .search-result-item {
   padding: 1rem;
-  background-color: white;
-  border: 1px solid #e0e0e0;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .search-result-item:hover {
-  border-color: #2196f3;
+  border-color: var(--accent-primary);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
@@ -48,13 +48,13 @@
 .result-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .result-snippet {
   font-size: 0.875rem;
-  color: #555;
+  color: var(--text-secondary);
   margin-bottom: 0.75rem;
   line-height: 1.5;
 }
@@ -64,7 +64,7 @@
   align-items: center;
   gap: 1rem;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-secondary);
   flex-wrap: wrap;
 }
 
@@ -85,7 +85,7 @@
   background-color: #e3f2fd;
   border-radius: 12px;
   font-size: 0.75rem;
-  color: #1976d2;
+  color: var(--accent-primary);
 }
 
 .result-date {
@@ -96,16 +96,16 @@
 .search-results-empty {
   text-align: center;
   padding: 3rem 1rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .search-results-empty p {
   font-size: 1.125rem;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .search-results-empty small {
   font-size: 0.875rem;
-  color: #999;
+  color: var(--text-muted);
 }
