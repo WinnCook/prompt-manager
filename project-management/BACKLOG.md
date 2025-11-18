@@ -11,10 +11,34 @@ This backlog contains all planned features and enhancements for Prompt Manager, 
 
 ### High Priority (Next Sprints)
 
+#### BACK-016: Project Quick Copy Feature ⭐ NEW - SPRINT 7 ACTIVE
+**Description**: Dual-selection system combining prompts with project metadata for rapid context-aware prompt generation
+**Story Points**: 13
+**Priority**: High
+**Status**: 🔄 In Progress (Sprint 7)
+**Branch**: `feature/project-quick-copy`
+**Dependencies**: None
+
+**Acceptance Criteria**:
+- [ ] New "Projects" section in main app sidebar
+- [ ] Project entity with title and file_location fields
+- [ ] Full CRUD operations for projects
+- [ ] Quick Access Widget redesigned with dual-column layout (Prompts | Projects)
+- [ ] Smart copy button that combines selected prompt + project
+- [ ] Hover buttons on projects to select title or location for copy
+- [ ] Copy combinations: prompt-only, project-only, or combined
+- [ ] Reordering support for projects
+- [ ] Dark mode compatible
+
+**Business Value**: 10x faster prompt composition for file-specific AI tasks
+
+---
+
 #### BACK-001: Advanced Search
 **Description**: Full-text search across all prompts with filters
 **Story Points**: 5
 **Priority**: High
+**Status**: ⏸️ Deferred (was Sprint 6)
 **Dependencies**: None
 
 **Acceptance Criteria**:

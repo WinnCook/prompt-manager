@@ -4,15 +4,22 @@
 
 ---
 
-## Active Sprint: Impromptu Sprint - Quick Access Widget Redesign (COMPLETED)
+## Active Sprint: Sprint 7 - Project Quick Copy Feature
+
+**Status**: 🔄 In Progress (2025-11-18)
+**Story Points**: 13
+**Priority**: High
+**Branch**: `feature/project-quick-copy`
+
+## Previous Sprint: Impromptu Sprint - Quick Access Widget Redesign (COMPLETED)
 
 **Status**: ✅ Completed (2025-11-18)
 **Story Points**: N/A (Impromptu)
 **Priority**: High
 
-## Next Sprint: Sprint 6 - Advanced Search
+## Deferred Sprint: Sprint 6 - Advanced Search
 
-**Status**: 🔄 Not Started / Idle
+**Status**: ⏸️ Deferred
 **File**: `SPRINT_06.md`
 **Story Points**: 5
 **Priority**: High
@@ -21,34 +28,40 @@
 
 ## Quick Links
 
-- **Full Sprint Details**: [SPRINT_06.md](./SPRINT_06.md)
+- **Full Sprint Details**: [SPRINT_07.md](./SPRINT_07.md)
 - **Backlog**: [BACKLOG.md](./BACKLOG.md)
 - **Completed Work**: [COMPLETED.md](./COMPLETED.md)
 - **Work Log**: [WORK_LOG.md](./WORK_LOG.md)
 
 ---
 
-## Sprint 6 Summary
+## Sprint 7 Summary
 
-**Goal**: Implement comprehensive advanced search functionality with filters, highlighting, real-time search, and context snippets.
+**Goal**: Implement dual-selection Quick Copy system combining prompts with project metadata for 10x faster file-specific prompt generation.
 
 **Key Features**:
-- 🔍 Date range filtering
-- 💡 Search result highlighting
-- ⚡ Real-time search as you type
-- 📝 Context snippets for matched text
-- 📊 Better relevance ranking
+- 📦 New "Projects" section in main app sidebar (title + file location)
+- 🔀 Quick Access Widget redesigned with dual columns (Prompts | Projects)
+- 🎯 Smart copy button with context-aware combinations
+- 🖱️ Hover buttons to select project title OR file location
+- ⚡ Copy combinations: prompt-only, project-only, or combined "{prompt} {project}"
+- 📊 Full CRUD + reordering for projects
 
 **Tasks**:
-1. S6-001: Add Date Filtering to Search API (1 pt)
-2. S6-002: Add Search Context Snippets (1 pt)
-3. S6-003: Add Date Filter UI (1 pt)
-4. S6-004: Add Search Result Highlighting (0.5 pt)
-5. S6-005: Implement Real-Time Search (0.5 pt)
-6. S6-006: Add Advanced Search UI Polish (0.5 pt)
-7. S6-007: Testing and Documentation (1 pt)
+1. S7-001: Create Projects Database Schema (1 pt)
+2. S7-002: Implement Projects API Endpoints (2 pts)
+3. S7-003: Add Projects to Quick Access API (1 pt)
+4. S7-004: API Documentation & Testing (1 pt)
+5. S7-005: Implement Smart Copy Logic (1 pt)
+6. S7-006: Create Projects Section in Main App Sidebar (2 pts)
+7. S7-007: Create Project State Management (1 pt)
+8. S7-008: Redesign Quick Access Widget - Two Column Layout (2 pts)
+9. S7-009: Implement Smart Copy Button (1 pt)
+10. S7-010: Widget-to-Backend Integration (0.5 pts)
+11. S7-011: UI Polish & Testing (0.5 pts)
+12. S7-012: Update Documentation (continuous)
 
-**Next Action**: Start with S6-001 when user is ready to begin Sprint 6.
+**Next Action**: Starting with S7-001 (Database Schema) immediately.
 
 ---
 

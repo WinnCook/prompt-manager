@@ -83,3 +83,16 @@ class ClaudeJob(Base):
 
     # Relationships
     prompt = relationship("Prompt", back_populates="claude_jobs")
+
+
+class Project(Base):
+    """Project model for storing project metadata (title + file location)."""
+
+    __tablename__ = "projects"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False, index=True)
+    file_location = Column(String(1000), nullable=False)
+    display_order = Column(Integer, nullable=True, index=True)  # User-defined sort order
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

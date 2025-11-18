@@ -37,29 +37,36 @@ def get_db():
 
 def init_db():
     """Initialize database - create all tables and run migrations."""
-    from app.db.models import Folder, Prompt, Version, ClaudeJob
+    from app.db.models import Folder, Prompt, Version, ClaudeJob, Project
 
     # Create all tables
     Base.metadata.create_all(bind=engine)
 
-    # Run migrations
+    # Run migrations FIRST before any queries
     try:
-        from migrations import migration_003_add_display_order
-        from migrations import migration_004_add_folder_display_order
-        migration_003_add_display_order.migrate()
-        migration_004_add_folder_display_order.migrate()
+        from migrations import add_display_order
+        from migrations import add_folder_display_order
+        from migrations import add_easy_access_order
+        from migrations import add_projects_table
+        add_display_order.migrate()
+        add_folder_display_order.migrate()
+        add_easy_access_order.migrate()
+        add_projects_table.migrate()
+        print("[OK] Migrations completed successfully")
     except Exception as e:
         print(f"[WARNING] Migration failed: {e}")
 
-    # Create root folder if it doesn't exist
+    # Create root folder if it doesn't exist (AFTER migrations)
     db = SessionLocal()
     try:
+        # Now safe to query - migrations have run
         root_folder = db.query(Folder).filter(Folder.parent_id.is_(None)).first()
         if not root_folder:
             root = Folder(
                 name="Root",
                 parent_id=None,
-                path="/"
+                path="/",
+                display_order=0
             )
             db.add(root)
             db.commit()
