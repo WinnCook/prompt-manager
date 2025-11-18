@@ -1,16 +1,19 @@
 # Quick Access Widget - Documentation
 
 ## Overview
-A floating widget that displays your favorite prompts (up to 8) in an always-on-top window. Perfect for quick access while working in VS Code or any other application.
+A floating widget that displays your complete folder hierarchy and starred prompts in an always-on-top window. Perfect for quick access while working in VS Code or any other application.
 
 ## Features
-✅ **Vertical Layout** - One column with each prompt as a row
+✅ **Full Folder Hierarchy** - Mirrors the exact folder structure from the main app
+✅ **Collapsible Folders** - Expand/collapse folders to see nested structure
+✅ **Starred Prompts Section** - Quick access to your favorite prompts below the folder tree
 ✅ **One-Click Copy** - Click any prompt to copy it to clipboard
 ✅ **Always on Top** - Floats over all other applications
 ✅ **Auto-Refresh** - Updates every 30 seconds
 ✅ **Beautiful UI** - Purple gradient design with smooth animations
 ✅ **Smart Badges** - Shows 📝 for prompts with variables, ✨ for AI-enhanced
 ✅ **Toast Notifications** - Visual feedback when copying
+✅ **Read-Only View** - All reordering happens in the main app
 
 ## Quick Start
 
@@ -45,17 +48,24 @@ Launches widget and automatically sets it always-on-top:
 
 ## How to Use
 
-1. **Star Your Favorite Prompts**
-   - Open the main Prompt Manager app at `http://localhost:5177`
-   - Click the ⭐ icon on prompts you want quick access to
-   - Maximum of 8 prompts can be starred
+1. **View Your Folder Structure**
+   - The widget displays your complete folder hierarchy
+   - Click the ▶/▼ arrows to expand/collapse folders
+   - The folder structure matches your main app exactly
+   - All folder ordering is preserved from the main app
 
-2. **Access from Anywhere**
+2. **Star Your Favorite Prompts**
+   - Open the main Prompt Manager app at `http://localhost:5173`
+   - Click the ⭐ icon on prompts you want quick access to
+   - Starred prompts appear in the section below the folder tree
+   - All prompt ordering happens in the main app only
+
+3. **Copy Prompts from Anywhere**
    - The widget floats on top of all applications
-   - Click any prompt to instantly copy it to clipboard
+   - Click any starred prompt to instantly copy it to clipboard
    - Prompts with variables show a warning (use main app to fill variables)
 
-3. **Refresh**
+4. **Refresh**
    - Auto-refreshes every 30 seconds
    - Manual refresh: Click the 🔄 button
 
@@ -69,9 +79,11 @@ Launches widget and automatically sets it always-on-top:
 - `launch-widget-always-on-top.ps1` - All-in-one launcher with auto always-on-top
 
 ### Backend Connection
-- Connects to: `http://127.0.0.1:8000/api/prompts/easy-access/list`
+- Folder API: `http://127.0.0.1:8000/api/folders`
+- Prompts API: `http://127.0.0.1:8000/api/prompts/easy-access/list`
 - CORS configured to allow `file://` protocol
 - Auto-refresh interval: 30 seconds
+- Parallel loading for faster initial display
 
 ### Customization
 The widget can be customized by editing `easy-access-widget.html`:

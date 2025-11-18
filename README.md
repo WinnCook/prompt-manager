@@ -17,8 +17,8 @@ Prompt Manager is a productivity tool designed to help users organize their prom
 - **Description Field**: Add detailed descriptions to prompts for better organization
 
 ### Advanced Features
-- **Quick Access Widget**: ⭐ **NEW!** Floating always-on-top widget for instant access to your 8 favorite prompts across all applications
-- **Easy Access Toolbar**: Star up to 8 prompts for quick copying from a persistent toolbar
+- **Quick Access Widget**: ⭐ **UPDATED!** Floating always-on-top widget with complete folder hierarchy and starred prompts - mirrors your exact folder structure from the main app
+- **Easy Access Toolbar**: Star your favorite prompts for quick copying from the widget
 - **Version Control**: Track original and enhanced versions of prompts
 - **AI Enhancement**: (Planned) Automatic prompt rewriting using Claude CLI
 - **Duplicate Prompts**: Clone prompts with optional title/folder customization
@@ -311,16 +311,18 @@ ALTER TABLE prompts ADD COLUMN description VARCHAR(1000);
 
 ## Recent Updates
 
-### Quick Access Widget (November 15, 2025) ✅ **NEW!**
-- **Floating Widget**: Always-on-top widget for instant access to favorite prompts across all applications
-- **Standalone HTML**: Single-file widget with no build process required
+### Quick Access Widget Redesign (November 18, 2025) ✅ **UPDATED!**
+- **Full Folder Hierarchy**: Widget now displays complete folder tree matching the main app's left sidebar
+- **Collapsible Folders**: Expand/collapse folders with ▶/▼ arrows to navigate nested structure
+- **Starred Prompts Section**: Favorite prompts displayed as rows beneath the folder tree
+- **Exact Order Matching**: Folder structure and ordering mirrors main app perfectly
+- **Read-Only View**: All reordering happens in main app; widget is view-only for simplicity
+- **Compact Design**: Optimized layout keeps widget as small as possible
+- **Parallel Loading**: Fetches folders and prompts simultaneously for faster display
 - **Beautiful UI**: Purple gradient design with smooth animations
 - **One-Click Copy**: Click any prompt to copy to clipboard
 - **Smart Features**: Auto-refresh, toast notifications, variable detection
 - **PowerToys Integration**: Win+Alt+O for always-on-top
-- **Multiple Launch Options**: PowerShell scripts for easy launching
-- **Documentation**: Complete guide in `QUICK_ACCESS_WIDGET.md`
-- **Max 8 Prompts**: Star your most-used prompts for quick access
 
 **How to Use**:
 ```bash

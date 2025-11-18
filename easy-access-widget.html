@@ -64,40 +64,118 @@
       background: rgba(255, 255, 255, 0.3);
     }
 
-    .prompts-list {
+    .content-area {
       overflow-y: auto;
       max-height: calc(100vh - 80px);
       padding: 8px;
     }
 
-    .prompts-list::-webkit-scrollbar {
+    .content-area::-webkit-scrollbar {
       width: 6px;
     }
 
-    .prompts-list::-webkit-scrollbar-track {
+    .content-area::-webkit-scrollbar-track {
       background: #f1f1f1;
       border-radius: 3px;
     }
 
-    .prompts-list::-webkit-scrollbar-thumb {
+    .content-area::-webkit-scrollbar-thumb {
       background: #667eea;
       border-radius: 3px;
+    }
+
+    /* Folder Tree Styles */
+    .folder-tree {
+      margin-bottom: 8px;
+    }
+
+    .folder-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      color: #333;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-radius: 4px;
+      font-size: 12px;
+      user-select: none;
+    }
+
+    .folder-item:hover {
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .folder-item.selected {
+      background: rgba(102, 126, 234, 0.15);
+      font-weight: 600;
+    }
+
+    .expand-button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 0;
+      margin-right: 4px;
+      font-size: 10px;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .expand-button:hover {
+      color: #667eea;
+    }
+
+    .folder-icon {
+      margin-right: 6px;
+      font-size: 12px;
+    }
+
+    .folder-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .folder-children {
+      margin-left: 16px;
+    }
+
+    /* Section Divider */
+    .section-divider {
+      margin: 12px 0;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 6px;
+      color: white;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Prompt Styles */
+    .prompts-section {
+      margin-top: 8px;
     }
 
     .prompt-item {
       background: white;
       border: 1px solid #e0e0e0;
       border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 8px;
-      cursor: grab;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      cursor: pointer;
       transition: all 0.2s;
       color: #333;
-      position: relative;
-    }
-
-    .prompt-item:active {
-      cursor: grabbing;
     }
 
     .prompt-item:hover {
@@ -107,51 +185,32 @@
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
-    .prompt-item.dragging {
-      opacity: 0.5;
-      transform: rotate(2deg);
-    }
-
-    .prompt-item.drag-over {
-      border-top: 3px solid #667eea;
-      margin-top: 12px;
-    }
-
     .prompt-title {
       font-weight: 600;
-      font-size: 13px;
-      margin-bottom: 4px;
+      font-size: 12px;
+      margin-bottom: 3px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
     .prompt-description {
-      font-size: 11px;
+      font-size: 10px;
       opacity: 0.7;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .badge {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 3px;
-      background: rgba(102, 126, 234, 0.1);
-      color: #667eea;
-      font-weight: 600;
-    }
-
-    .prompt-item:hover .badge {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-    }
-
     .emoji-badge {
-      font-size: 12px;
+      font-size: 11px;
     }
 
+    .prompt-item:hover .prompt-description {
+      opacity: 0.9;
+    }
+
+    /* States */
     .loading {
       text-align: center;
       padding: 24px;
@@ -179,6 +238,7 @@
       opacity: 0.3;
     }
 
+    /* Toast Notifications */
     .toast {
       position: fixed;
       bottom: 16px;
@@ -207,6 +267,10 @@
     .toast.error {
       background: #f44336;
     }
+
+    .toast.warning {
+      background: #ff9800;
+    }
   </style>
 </head>
 <body>
@@ -215,12 +279,11 @@
       <div class="widget-title">
         <span>⚡</span>
         <span>Quick Access</span>
-        <span id="count" style="opacity: 0.7; font-size: 12px;"></span>
       </div>
-      <button class="refresh-btn" onclick="loadPrompts()">🔄 Refresh</button>
+      <button class="refresh-btn" onclick="loadData()">🔄 Refresh</button>
     </div>
-    <div class="prompts-list" id="promptsList">
-      <div class="loading">Loading prompts...</div>
+    <div class="content-area" id="contentArea">
+      <div class="loading">Loading...</div>
     </div>
   </div>
 
@@ -228,9 +291,11 @@
 
   <script>
     const API_BASE = 'http://127.0.0.1:8000';
-    let prompts = [];
-    let draggedElement = null;
-    let draggedIndex = null;
+    let folders = [];
+    let allPrompts = [];
+    let starredPrompts = [];
+    let expandedFolders = new Set();
+    let promptsByFolder = {};
 
     // Show toast notification
     function showToast(message, type = 'success') {
@@ -243,51 +308,131 @@
       }, 3000);
     }
 
-    // Load easy access prompts from API
-    async function loadPrompts() {
-      const promptsList = document.getElementById('promptsList');
-      const countEl = document.getElementById('count');
+    // Load both folders and prompts
+    async function loadData() {
+      const contentArea = document.getElementById('contentArea');
 
       try {
-        promptsList.innerHTML = '<div class="loading">Loading prompts...</div>';
+        contentArea.innerHTML = '<div class="loading">Loading...</div>';
 
-        const response = await fetch(`${API_BASE}/api/prompts/easy-access/list`);
-        const data = await response.json();
+        // Fetch folders, all prompts, and starred prompts in parallel
+        const [foldersResponse, allPromptsResponse, starredPromptsResponse] = await Promise.all([
+          fetch(`${API_BASE}/api/folders`),
+          fetch(`${API_BASE}/api/prompts?limit=10000`),
+          fetch(`${API_BASE}/api/prompts/easy-access/list`)
+        ]);
 
-        prompts = data.prompts || [];
-        countEl.textContent = prompts.length > 0 ? `(${prompts.length})` : '';
+        const foldersData = await foldersResponse.json();
+        const allPromptsData = await allPromptsResponse.json();
+        const starredPromptsData = await starredPromptsResponse.json();
 
-        if (prompts.length === 0) {
-          promptsList.innerHTML = `
-            <div class="empty-state">
-              <div class="empty-state-icon">⭐</div>
-              <div>No quick access prompts yet!</div>
-              <div style="margin-top: 8px; font-size: 11px; opacity: 0.6;">
-                Star prompts in the main app to add them here
-              </div>
-            </div>
-          `;
-          return;
-        }
+        folders = foldersData.folders || [];
+        allPrompts = allPromptsData.prompts || [];
+        starredPrompts = starredPromptsData.prompts || [];
 
-        renderPrompts();
+        // Organize prompts by folder_id
+        promptsByFolder = {};
+        allPrompts.forEach(prompt => {
+          if (!promptsByFolder[prompt.folder_id]) {
+            promptsByFolder[prompt.folder_id] = [];
+          }
+          promptsByFolder[prompt.folder_id].push(prompt);
+        });
+
+        render();
 
       } catch (error) {
-        console.error('Failed to load prompts:', error);
-        promptsList.innerHTML = `
+        console.error('Failed to load data:', error);
+        contentArea.innerHTML = `
           <div class="error">
-            Failed to load prompts<br>
+            Failed to load data<br>
             <small>Make sure the backend is running on port 8000</small>
           </div>
         `;
       }
     }
 
-    // Render prompts with drag-and-drop
-    function renderPrompts() {
-      const promptsList = document.getElementById('promptsList');
+    // Render complete widget
+    function render() {
+      const contentArea = document.getElementById('contentArea');
 
-      promptsList.innerHTML = prompts.map((prompt, index) => {
+      let html = '';
+
+      // Render folder tree with prompts
+      html += '<div class="folder-tree">';
+      html += renderFolderTree(folders);
+      html += '</div>';
+
+      // Section divider
+      html += '<div class="section-divider"><span>⭐</span><span>Starred Prompts</span></div>';
+
+      // Render starred prompts
+      html += '<div class="prompts-section">';
+      if (starredPrompts.length === 0) {
+        html += `
+          <div class="empty-state">
+            <div class="empty-state-icon">⭐</div>
+            <div>No starred prompts yet!</div>
+            <div style="margin-top: 8px; font-size: 11px; opacity: 0.6;">
+              Star prompts in the main app<br>to add them here
+            </div>
+          </div>
+        `;
+      } else {
+        html += renderStarredPrompts();
+      }
+      html += '</div>';
+
+      contentArea.innerHTML = html;
+
+      // Add event listeners
+      attachEventListeners();
+    }
+
+    // Render folder tree recursively
+    function renderFolderTree(folderList, level = 0) {
+      if (!folderList || folderList.length === 0) return '';
+
+      let html = '';
+
+      for (const folder of folderList) {
+        const hasChildren = folder.children && folder.children.length > 0;
+        const folderPrompts = promptsByFolder[folder.id] || [];
+        const hasContent = hasChildren || folderPrompts.length > 0;
+        const isExpanded = expandedFolders.has(folder.id);
+        const indent = level * 16;
+
+        html += `
+          <div class="folder-tree-item">
+            <div class="folder-item" style="padding-left: ${indent + 8}px" data-folder-id="${folder.id}">
+              <button
+                class="expand-button"
+                style="visibility: ${hasContent ? 'visible' : 'hidden'}"
+                data-folder-id="${folder.id}"
+                onclick="toggleFolder(${folder.id}, event)"
+              >
+                ${isExpanded ? '▼' : '▶'}
+              </button>
+              <span class="folder-icon">📁</span>
+              <span class="folder-name">${escapeHtml(folder.name)}</span>
+            </div>
+            ${isExpanded ? `
+              <div class="folder-children">
+                ${folderPrompts.length > 0 ? renderFolderPrompts(folderPrompts, level + 1) : ''}
+                ${hasChildren ? renderFolderTree(folder.children, level + 1) : ''}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      return html;
+    }
+
+    // Render prompts within a folder
+    function renderFolderPrompts(prompts, level) {
+      const indent = level * 16;
+      return prompts.map(prompt => {
         const hasVars = /\{\{[A-Z_]+\}\}/.test(prompt.content);
         const badges = [];
 
@@ -297,11 +442,9 @@
         return `
           <div
             class="prompt-item"
-            draggable="true"
-            data-index="${index}"
-            data-id="${prompt.id}"
-            onclick="copyPrompt(${prompt.id})"
-            title="${escapeHtml(prompt.description || 'Click to copy. Drag to reorder.')}"
+            style="margin-left: ${indent + 8}px; margin-bottom: 4px;"
+            data-prompt-id="${prompt.id}"
+            title="${escapeHtml(prompt.description || 'Click to copy')}"
           >
             <div class="prompt-title">
               ${escapeHtml(prompt.title)}
@@ -311,115 +454,67 @@
           </div>
         `;
       }).join('');
-
-      // Add drag-and-drop event listeners
-      const items = document.querySelectorAll('.prompt-item');
-      items.forEach(item => {
-        item.addEventListener('dragstart', handleDragStart);
-        item.addEventListener('dragend', handleDragEnd);
-        item.addEventListener('dragover', handleDragOver);
-        item.addEventListener('drop', handleDrop);
-        item.addEventListener('dragleave', handleDragLeave);
-      });
     }
 
-    function handleDragStart(e) {
-      draggedElement = e.target;
-      draggedIndex = parseInt(e.target.dataset.index);
-      e.target.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', e.target.innerHTML);
+    // Render starred prompts list
+    function renderStarredPrompts() {
+      return starredPrompts.map(prompt => {
+        const hasVars = /\{\{[A-Z_]+\}\}/.test(prompt.content);
+        const badges = [];
+
+        if (hasVars) badges.push('<span class="emoji-badge">📝</span>');
+        if (prompt.is_ai_enhanced) badges.push('<span class="emoji-badge">✨</span>');
+
+        return `
+          <div
+            class="prompt-item"
+            data-prompt-id="${prompt.id}"
+            title="${escapeHtml(prompt.description || 'Click to copy')}"
+          >
+            <div class="prompt-title">
+              ${escapeHtml(prompt.title)}
+              ${badges.join(' ')}
+            </div>
+            ${prompt.description ? `<div class="prompt-description">${escapeHtml(prompt.description)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
     }
 
-    function handleDragEnd(e) {
-      e.target.classList.remove('dragging');
+    // Toggle folder expand/collapse
+    function toggleFolder(folderId, event) {
+      event.stopPropagation();
 
-      // Remove all drag-over classes
-      const items = document.querySelectorAll('.prompt-item');
-      items.forEach(item => item.classList.remove('drag-over'));
-    }
-
-    function handleDragOver(e) {
-      if (e.preventDefault) {
-        e.preventDefault();
+      if (expandedFolders.has(folderId)) {
+        expandedFolders.delete(folderId);
+      } else {
+        expandedFolders.add(folderId);
       }
 
-      e.dataTransfer.dropEffect = 'move';
-      return false;
+      render();
     }
 
-    function handleDrop(e) {
-      if (e.stopPropagation) {
-        e.stopPropagation();
-      }
-
-      e.target.classList.remove('drag-over');
-
-      const dropIndex = parseInt(e.target.closest('.prompt-item').dataset.index);
-
-      if (draggedIndex !== dropIndex) {
-        reorderPrompts(draggedIndex, dropIndex);
-      }
-
-      return false;
-    }
-
-    function handleDragLeave(e) {
-      e.target.classList.remove('drag-over');
-    }
-
-    // Reorder prompts
-    async function reorderPrompts(fromIndex, toIndex) {
-      const movedPrompt = prompts[fromIndex];
-
-      // Optimistically update UI
-      const newPrompts = [...prompts];
-      newPrompts.splice(fromIndex, 1);
-      newPrompts.splice(toIndex, 0, movedPrompt);
-      prompts = newPrompts;
-      renderPrompts();
-
-      try {
-        // Send reorder request to backend
-        const response = await fetch(`${API_BASE}/api/prompts/easy-access/reorder`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt_id: movedPrompt.id,
-            new_position: toIndex,
-          }),
+    // Attach event listeners after render
+    function attachEventListeners() {
+      // Prompt click handlers
+      const promptItems = document.querySelectorAll('.prompt-item');
+      promptItems.forEach(item => {
+        item.addEventListener('click', function() {
+          const promptId = parseInt(this.dataset.promptId);
+          copyPrompt(promptId);
         });
-
-        const data = await response.json();
-
-        if (data.success && data.prompts) {
-          prompts = data.prompts;
-          renderPrompts();
-          showToast('✓ Order updated!', 'success');
-        } else {
-          // Rollback on error
-          await loadPrompts();
-          showToast('Failed to reorder', 'error');
-        }
-      } catch (error) {
-        console.error('Reorder error:', error);
-        // Rollback on error
-        await loadPrompts();
-        showToast('Failed to reorder', 'error');
-      }
+      });
     }
 
     // Copy prompt to clipboard
     async function copyPrompt(promptId) {
-      const prompt = prompts.find(p => p.id === promptId);
+      const prompt = allPrompts.find(p => p.id === promptId);
       if (!prompt) return;
 
       // Check for variables
       const hasVars = /\{\{[A-Z_]+\}\}/.test(prompt.content);
       if (hasVars) {
-        showToast('⚠️ This prompt has variables - use main app to fill them', 'error');
+        showToast('⚠️ This prompt has variables - use main app to fill them', 'warning');
         return;
       }
 
@@ -440,10 +535,10 @@
     }
 
     // Auto-refresh every 30 seconds
-    setInterval(loadPrompts, 30000);
+    setInterval(loadData, 30000);
 
     // Initial load
-    loadPrompts();
+    loadData();
   </script>
 </body>
 </html>
