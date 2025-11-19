@@ -21,12 +21,12 @@ timeout /t 5 /nobreak >nul
 
 REM Open browser
 echo Opening Prompt Manager in browser...
-start http://localhost:5173
+start http://localhost:5180
 
 echo.
 echo Prompt Manager is starting!
-echo - Backend: http://127.0.0.1:8000
-echo - Frontend: http://localhost:5173
+echo - Backend: http://127.0.0.1:8050
+echo - Frontend: http://localhost:5180
 echo.
 echo Press any key to close this window (servers will continue running)...
 pause >nul

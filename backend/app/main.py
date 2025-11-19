@@ -42,6 +42,8 @@ app.add_middleware(
         "http://127.0.0.1:5178",
         "http://127.0.0.1:5179",
         "http://127.0.0.1:5180",
+        "http://127.0.0.1:8050",
+        "http://localhost:8050",
         "null",  # Allow file:// protocol for standalone widget
     ],
     allow_credentials=True,
@@ -55,10 +57,11 @@ app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(Exception, generic_exception_handler)
 
 # Import and register routers
-from app.api.routers import folders, prompts
+from app.api.routers import folders, prompts, projects
 
 app.include_router(folders.router)
 app.include_router(prompts.router)
+app.include_router(projects.router)
 
 
 @app.on_event("startup")

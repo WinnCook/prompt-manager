@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     # API Settings
     HOST: str = "127.0.0.1"
-    PORT: int = 8000
+    PORT: int = 8050
     DEBUG: bool = True
 
     # Database Settings

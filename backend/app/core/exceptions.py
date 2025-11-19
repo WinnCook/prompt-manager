@@ -77,3 +77,13 @@ class ClaudeCLIException(AppException):
             message=f"Claude CLI error: {message}",
             code="CLAUDE_CLI_ERROR"
         )
+
+
+class ProjectNotFoundException(AppException):
+    """Raised when a project is not found."""
+
+    def __init__(self, project_id: int):
+        super().__init__(
+            message=f"Project with ID {project_id} not found",
+            code="PROJECT_NOT_FOUND"
+        )

@@ -23,8 +23,8 @@ WScript.Sleep 5000
 ' Try Chrome first
 strChromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 If objFSO.FileExists(strChromePath) Then
-    objShell.Run """" & strChromePath & """ --app=http://localhost:5173", 1, False
+    objShell.Run """" & strChromePath & """ --app=http://localhost:5180", 1, False
 Else
     ' Fall back to default browser
-    objShell.Run "http://localhost:5173", 1, False
+    objShell.Run "http://localhost:5180", 1, False
 End If

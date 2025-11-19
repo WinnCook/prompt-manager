@@ -1,5 +1,5 @@
-# Kill processes on ports 8000 and 8001
-$ports = @(8000, 8001)
+# Kill processes on ports 8050 and 8051 (updated from 8000/8001)
+$ports = @(8050, 8051)
 
 foreach ($port in $ports) {
     $connections = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue

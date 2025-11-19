@@ -1,7 +1,7 @@
 # Launch Quick Access Widget in Chrome App Mode (Always on Top)
 # This opens the widget as a small floating window
 
-$widgetPath = Join-Path $PSScriptRoot "easy-access-widget.html"
+$widgetPath = Join-Path $PSScriptRoot "frontend\public\easy-access-widget.html"
 $chromeArgs = @(
     "--app=file:///$($widgetPath -replace '\\','/')",
     "--window-size=320,600",
