@@ -3,42 +3,108 @@
 This document tracks session handoff notes, current work-in-progress, and context for the next agent/session.
 
 **Last Updated**: 2025-11-18
-**Current Sprint**: Sprint 6 (Advanced Search) - Not Started
-**Status**: Idle - Awaiting next task
+**Current Sprint**: Sprint 7 (Project Quick Copy) - In Progress
+**Status**: Active Development - Backend API Complete
+**Branch**: `feature/project-quick-copy`
 
 ---
 
-## Latest Session Handoff (2025-11-18)
+## DAILY HANDOFF - 2025-11-18
 
 ### Current State
-- **Active Branch**: `main` (no active feature branch)
-- **Last Completed Work**: Quick Access Widget Redesign (Impromptu Sprint)
-- **Completion Date**: November 18, 2025
-- **Next Planned Work**: Sprint 6 (Advanced Search) - 5 story points
+- **Active Branch**: `feature/project-quick-copy`
+- **Last Completed Work**: S7-002 Projects API + Port Configuration Fix
+- **Completion Date**: November 18, 2025 (Partial - Sprint 7 ongoing)
+- **Next Planned Work**: S7-003 (Add Projects to Quick Access API)
 
-### What's Working
-✅ Full prompt CRUD operations with folders and hierarchies
-✅ Drag-and-drop for prompts and folders
-✅ List view and grid view with persistent preference
-✅ Dark mode theme with light/dark/system auto-detection
-✅ Voice-to-text input on all text fields
-✅ Quick Access Widget with full folder hierarchy and starred prompts ⭐ **NEW!**
-✅ Resizable sidebar (200px - 600px)
-✅ Database migrations working correctly
-✅ Silent launcher with no terminal windows
+### Achievements Today
 
-### Open Loops / Pending Items
-- Sprint 6 (Advanced Search) planned but not started
-- Architecture documentation mentions "Electron" but project uses "React + Vite" (web-first, Electron optional)
-- Multiple session summary files in root directory could be organized into `project-management/sessions/`
+**Sprint 7 Initialization (3/13 story points = 23% complete)**:
+- ✅ **S7-001**: Database schema for projects table
+  - Created migration script (Migration 007)
+  - Added Project SQLAlchemy model
+  - Migration tested and verified
 
-### Known Issues
-- None currently blocking
+- ✅ **S7-002**: Complete Projects CRUD API
+  - Pydantic models: `ProjectCreate`, `ProjectUpdate`, `ProjectReorder`, `ProjectResponse`
+  - Repository layer with full CRUD operations
+  - Service layer with business logic and reordering
+  - API router with 6 endpoints (GET, POST, PUT, DELETE, REORDER)
+  - Exception handling with `ProjectNotFoundException`
+
+**Critical Port Conflict Resolution**:
+- ✅ Fixed desktop shortcuts opening wrong application (BTC dashboard)
+- ✅ Changed backend from port 8000 → 8050
+- ✅ Changed frontend from port 5173 → 5180
+- ✅ Updated all launcher scripts (VBS, BAT, PS1)
+- ✅ Recreated desktop shortcuts for Prompt Manager and Quick Access Widget
+- ✅ Updated widget HTML and API client URLs
+- ✅ Tested: Both shortcuts now launch correct applications
+
+**Documentation**:
+- ✅ Created comprehensive `SPRINT_07.md` (12 tasks, detailed specs)
+- ✅ Created `SPRINT_07_KICKOFF.md` (developer guide)
+- ✅ Updated `CURRENT_SPRINT.md` to activate Sprint 7
+- ✅ Updated `BACKLOG.md` with BACK-016
+
+### What's Working Now
+✅ All previous features (CRUD, drag-drop, dark mode, voice input, etc.)
+✅ Projects database table created and migrated
+✅ Projects API fully functional at http://127.0.0.1:8050/api/projects
+✅ Backend server starts cleanly on port 8050
+✅ Frontend configured for port 5180
+✅ Desktop shortcuts launch correct applications
+✅ No port conflicts with other projects
+
+### Known Issues / Unresolved
+- ⚠️ **Temporary files in root**: `nul`, `check_folders.py`, session summaries (not critical)
+- ⚠️ **Deprecation Warning**: FastAPI `@app.on_event("startup")` deprecated (use lifespan handlers)
+- ⚠️ **Modified files not committed**: Various unrelated changes from previous sprints exist in working directory
+  - These are NOT part of Sprint 7 and should be addressed separately or stashed
+
+### Open Loops / Next Session Tasks
+**Immediate Next Steps (Start Here Tomorrow)**:
+1. **S7-003**: Add Projects to Quick Access API (1 pt)
+   - Create `GET /api/easy-access/data` endpoint
+   - Return: `{ prompts: [], projects: [] }`
+   - Modify existing easy-access router or create new combined endpoint
+   - File: `backend/app/api/routers/prompts.py` or new file
+
+2. **S7-004**: API Documentation & Testing (1 pt)
+   - Update `docs/API_SPEC.md` with all 6 project endpoints
+   - Test with curl/Postman
+
+3. **S7-005**: Smart Copy Logic API (1 pt)
+   - Create `POST /api/copy/generate` endpoint
+   - Handle combinations: prompt-only, project-only, combined
+
+**Exact Starting Command for Tomorrow**:
+```bash
+cd "C:\Users\winnl\Documents\ClaudeCodePlayground\prompt-manager"
+git checkout feature/project-quick-copy
+git pull origin feature/project-quick-copy
+
+# Start backend
+cd backend
+.venv\Scripts\python.exe -m app.main
+
+# In new terminal, start frontend
+cd ../frontend
+npm run dev
+
+# Open http://localhost:5180 to verify
+```
+
+**Files to Create Tomorrow**:
+- `backend/app/api/routers/easy_access.py` (or modify prompts.py)
+- `backend/app/api/routers/copy.py`
+- `backend/app/services/copy_service.py`
 
 ### Technical Debt
-- Test coverage needs improvement (no automated tests yet)
-- Consider adding comprehensive error handling in backend
-- Performance monitoring/logging system not yet implemented
+- Test coverage still needs improvement
+- FastAPI lifespan event handlers migration (low priority)
+- Session summary files organization
+- Clean up unrelated modified files in working directory
 
 ---
 
